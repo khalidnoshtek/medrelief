@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#1e40af" />
+<title>Medrelief — AI-first LIMS for diagnostic labs</title>
+<meta name="description" content="Point, verify, done. Medrelief reads prescriptions with AI so rural labs can register patients, bill, and deliver reports in under 2 minutes." />
+<meta property="og:title" content="Medrelief — AI-first LIMS" />
+<meta property="og:description" content="Point, verify, done. AI reads the prescription. Staff verify. Reports go out on WhatsApp." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231e40af'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-family='Arial' font-size='60' font-weight='900' fill='white'%3EM%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        colors: {
+          brand: { 50:'#eff6ff', 100:'#dbeafe', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 800:'#1e40af', 900:'#1e3a8a' }
+        },
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .grid-pattern {
+    background-image: linear-gradient(rgba(59,130,246,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .glow {
+    background: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.25), transparent 50%);
+  }
+  .phone-frame {
+    box-shadow: 0 40px 80px -20px rgba(30, 58, 138, 0.35), 0 0 0 12px #1e3a8a, 0 0 0 13px #111827;
+    border-radius: 42px;
+  }
+  .feature-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -15px rgba(30, 58, 138, 0.15);
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-slide-up { animation: slideUp 0.6s ease-out forwards; }
+  [data-delay="100"] { animation-delay: 100ms; }
+  [data-delay="200"] { animation-delay: 200ms; }
+  [data-delay="300"] { animation-delay: 300ms; }
+</style>
+</head>
+<body class="bg-white text-slate-900">
+
+<!-- Nav -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-xl bg-brand-800 text-white flex items-center justify-center text-lg font-black">M</div>
+      <span class="text-lg font-bold tracking-tight">Medrelief</span>
+    </div>
+    <div class="hidden md:flex items-center gap-8 text-sm text-slate-600">
+      <a href="#features" class="hover:text-slate-900 transition">Features</a>
+      <a href="#flow" class="hover:text-slate-900 transition">How it works</a>
+      <a href="#who" class="hover:text-slate-900 transition">Who it's for</a>
+      <a href="#contact" class="hover:text-slate-900 transition">Contact</a>
+    </div>
+    <a href="#contact" class="bg-brand-800 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-brand-900 transition">Book a demo</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="relative pt-32 pb-20 overflow-hidden">
+  <div class="absolute inset-0 glow"></div>
+  <div class="absolute inset-0 grid-pattern opacity-40"></div>
+  <div class="relative max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+    <div class="animate-slide-up">
+      <div class="inline-flex items-center gap-2 bg-brand-50 text-brand-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
+        <span class="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></span>
+        New · AI prescription capture
+      </div>
+      <h1 class="text-5xl md:text-6xl font-black tracking-tight leading-[1.05] mb-6">
+        Point.<br/>
+        Verify.<br/>
+        <span class="text-brand-700">Done.</span>
+      </h1>
+      <p class="text-xl text-slate-600 mb-8 leading-relaxed">
+        The AI-first LIMS for diagnostic labs. Staff snap a photo of the prescription — Medrelief reads the patient details, the doctor, the tests. Register, bill and deliver reports in under <strong>2 minutes</strong>.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href="#contact" class="bg-brand-800 text-white font-semibold px-6 py-3.5 rounded-xl hover:bg-brand-900 transition text-center">Book a demo</a>
+        <a href="#flow" class="border border-slate-200 font-semibold px-6 py-3.5 rounded-xl hover:bg-slate-50 transition text-center">See how it works →</a>
+      </div>
+      <div class="mt-10 flex items-center gap-6 text-sm text-slate-500">
+        <div class="flex items-center gap-2"><span class="text-brand-600 text-lg">✓</span> Works on any phone</div>
+        <div class="flex items-center gap-2"><span class="text-brand-600 text-lg">✓</span> Hindi + English</div>
+        <div class="flex items-center gap-2"><span class="text-brand-600 text-lg">✓</span> Zero training</div>
+      </div>
+    </div>
+
+    <!-- Phone mock -->
+    <div class="relative flex justify-center animate-slide-up" data-delay="200">
+      <div class="phone-frame bg-white w-80 h-[640px] overflow-hidden relative">
+        <!-- Phone notch -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-36 h-6 bg-slate-900 rounded-b-2xl z-10"></div>
+        <!-- App content -->
+        <div class="p-6 pt-12 h-full bg-gradient-to-br from-brand-50 to-white">
+          <div class="flex items-center gap-2 mb-8">
+            <div class="w-8 h-8 rounded-lg bg-brand-800 text-white flex items-center justify-center text-sm font-black">M</div>
+            <p class="font-semibold text-sm">Medrelief</p>
+          </div>
+          <div class="text-center mb-6">
+            <p class="text-xs text-slate-500">Welcome, Priya</p>
+          </div>
+          <div class="bg-brand-800 rounded-3xl p-6 text-white shadow-lg mb-4">
+            <div class="text-4xl mb-3">📝</div>
+            <p class="text-xl font-bold">New Visit</p>
+            <p class="text-xs text-brand-100 mt-1">Scan prescription and register</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="bg-white rounded-2xl p-4 shadow-sm">
+              <div class="text-2xl mb-1">🔍</div>
+              <p class="text-sm font-semibold">Check Status</p>
+            </div>
+            <div class="bg-white rounded-2xl p-4 shadow-sm">
+              <div class="text-2xl mb-1">🧾</div>
+              <p class="text-sm font-semibold">Bills</p>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center gap-3">
+              <div class="text-2xl">📊</div>
+              <div>
+                <p class="text-sm font-semibold">Dashboard</p>
+                <p class="text-[10px] text-slate-400">₹47,830 today · 32 bills</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Stats strip -->
+<section class="border-y border-slate-100 bg-slate-50/50 py-8">
+  <div class="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+    <div>
+      <p class="text-3xl font-black text-brand-800">&lt;2 min</p>
+      <p class="text-sm text-slate-500 mt-1">Registration to receipt</p>
+    </div>
+    <div>
+      <p class="text-3xl font-black text-brand-800">80%</p>
+      <p class="text-sm text-slate-500 mt-1">Fields AI-filled</p>
+    </div>
+    <div>
+      <p class="text-3xl font-black text-brand-800">0</p>
+      <p class="text-sm text-slate-500 mt-1">Training required</p>
+    </div>
+    <div>
+      <p class="text-3xl font-black text-brand-800">₹0.08</p>
+      <p class="text-sm text-slate-500 mt-1">AI cost per visit</p>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features" class="py-24">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="text-brand-700 font-semibold text-sm tracking-wide uppercase mb-2">What's inside</p>
+      <h2 class="text-4xl md:text-5xl font-black tracking-tight">Built for the people who actually use it</h2>
+      <p class="text-lg text-slate-600 mt-4 max-w-2xl mx-auto">No forms to fill. No jargon. Just the prescription in front of you, and the AI doing the typing.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="feature-card bg-white border border-slate-100 rounded-2xl p-6">
+        <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center text-2xl mb-4">📷</div>
+        <h3 class="text-lg font-bold mb-2">Camera-first capture</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">Take a photo. Claude Vision extracts patient name, age, mobile, doctor and tests. Staff just confirm with a tap.</p>
+      </div>
+
+      <div class="feature-card bg-white border border-slate-100 rounded-2xl p-6">
+        <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center text-2xl mb-4">🎙️</div>
+        <h3 class="text-lg font-bold mb-2">Voice fill, bilingual</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">Tap the mic on any field. Dictate in Hindi or English. No typing a rural patient's name letter-by-letter.</p>
+      </div>
+
+      <div class="feature-card bg-white border border-slate-100 rounded-2xl p-6">
+        <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center text-2xl mb-4">🧬</div>
+        <h3 class="text-lg font-bold mb-2">Doctor-aware test suggestions</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">Referred by a gynecologist? App suggests the common panel. Cardiologist? Cardiac markers. Less clicking, fewer mistakes.</p>
+      </div>
+
+      <div class="feature-card bg-white border border-slate-100 rounded-2xl p-6">
+        <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center text-2xl mb-4">🧾</div>
+        <h3 class="text-lg font-bold mb-2">Flat, clear billing</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">MRP plus manual discount. Split payments across cash, UPI and card. No hidden rate plans.</p>
+      </div>
+
+      <div class="feature-card bg-white border border-slate-100 rounded-2xl p-6">
+        <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center text-2xl mb-4">📱</div>
+        <h3 class="text-lg font-bold mb-2">QR on every bill</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">Patient walks home with a QR. Comes back to check status — staff scan it, see every test and deliver the report.</p>
+      </div>
+
+      <div class="feature-card bg-white border border-slate-100 rounded-2xl p-6">
+        <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center text-2xl mb-4">💬</div>
+        <h3 class="text-lg font-bold mb-2">WhatsApp reports</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">When the pathologist signs off, the PDF goes straight to the patient's WhatsApp. Automatic. Audited. Re-sendable.</p>
+      </div>
+
+      <div class="feature-card bg-white border border-slate-100 rounded-2xl p-6">
+        <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center text-2xl mb-4">📊</div>
+        <h3 class="text-lg font-bold mb-2">Owner dashboard</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">Revenue, payment mode breakdown, referring doctor volume, lab TAT — every rupee and every test, live.</p>
+      </div>
+
+      <div class="feature-card bg-white border border-slate-100 rounded-2xl p-6">
+        <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center text-2xl mb-4">🔬</div>
+        <h3 class="text-lg font-bold mb-2">Role-based simplicity</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">Billing staff see only billing. Lab sees the worklist. Pathologist signs off. Owner sees everything. No cross-role noise.</p>
+      </div>
+
+      <div class="feature-card bg-white border border-slate-100 rounded-2xl p-6">
+        <div class="w-12 h-12 rounded-xl bg-brand-50 flex items-center justify-center text-2xl mb-4">🏷️</div>
+        <h3 class="text-lg font-bold mb-2">Barcode labels</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">Scannable Code 128 labels auto-print for every sample tube. No more hand-written tags.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section id="flow" class="py-24 bg-slate-50/50 border-y border-slate-100">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="text-brand-700 font-semibold text-sm tracking-wide uppercase mb-2">How it works</p>
+      <h2 class="text-4xl md:text-5xl font-black tracking-tight">From prescription to report</h2>
+      <p class="text-lg text-slate-600 mt-4">A typical visit. Under two minutes.</p>
+    </div>
+
+    <div class="grid md:grid-cols-4 gap-6">
+      <div class="relative">
+        <div class="bg-white border border-slate-100 rounded-2xl p-6 h-full">
+          <div class="w-10 h-10 rounded-full bg-brand-800 text-white flex items-center justify-center font-bold mb-4">1</div>
+          <h3 class="font-bold mb-2">Snap the prescription</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Open the app, hit camera, point at the slip. Take photo.</p>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="bg-white border border-slate-100 rounded-2xl p-6 h-full">
+          <div class="w-10 h-10 rounded-full bg-brand-800 text-white flex items-center justify-center font-bold mb-4">2</div>
+          <h3 class="font-bold mb-2">AI fills the form</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Name, age, gender, mobile, doctor, tests — all extracted. Confidence shown per field.</p>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="bg-white border border-slate-100 rounded-2xl p-6 h-full">
+          <div class="w-10 h-10 rounded-full bg-brand-800 text-white flex items-center justify-center font-bold mb-4">3</div>
+          <h3 class="font-bold mb-2">Staff verify & pay</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Tap to correct red fields. Select payment mode. Collect. QR and receipt print.</p>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="bg-white border border-slate-100 rounded-2xl p-6 h-full">
+          <div class="w-10 h-10 rounded-full bg-brand-800 text-white flex items-center justify-center font-bold mb-4">4</div>
+          <h3 class="font-bold mb-2">Report on WhatsApp</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Pathologist signs off. Report auto-dispatches. Patient scans QR any time to re-download.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Who it's for -->
+<section id="who" class="py-24">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="text-brand-700 font-semibold text-sm tracking-wide uppercase mb-2">Who it's for</p>
+      <h2 class="text-4xl md:text-5xl font-black tracking-tight">Designed around your team</h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-gradient-to-br from-brand-50 to-white border border-brand-100 rounded-2xl p-8">
+        <div class="text-4xl mb-4">👩‍💼</div>
+        <h3 class="text-xl font-bold mb-3">Reception staff</h3>
+        <p class="text-slate-600 leading-relaxed text-sm">One button on the home screen: <strong>New Visit</strong>. Camera does the typing. No hunting through menus, no data-entry forms.</p>
+      </div>
+      <div class="bg-gradient-to-br from-brand-50 to-white border border-brand-100 rounded-2xl p-8">
+        <div class="text-4xl mb-4">🧪</div>
+        <h3 class="text-xl font-bold mb-3">Lab technicians & pathologists</h3>
+        <p class="text-slate-600 leading-relaxed text-sm">TAT-prioritized worklist filtered by department. Enter results with voice. Abnormal values flag automatically. Sign off in one tap.</p>
+      </div>
+      <div class="bg-gradient-to-br from-brand-50 to-white border border-brand-100 rounded-2xl p-8">
+        <div class="text-4xl mb-4">🏢</div>
+        <h3 class="text-xl font-bold mb-3">Lab owners</h3>
+        <p class="text-slate-600 leading-relaxed text-sm">Revenue, referring doctor volume, collections by mode, pending approvals — every metric is a by-product of good data capture.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact" class="py-24 bg-brand-800 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 20% 50%, white 1px, transparent 1px); background-size: 30px 30px;"></div>
+  <div class="relative max-w-4xl mx-auto px-6 text-center text-white">
+    <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-6">See it in action</h2>
+    <p class="text-xl text-brand-100 mb-10">We'll walk you through a live visit with your own prescriptions. Fifteen minutes.</p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="mailto:hello@medrelief.in" class="bg-white text-brand-800 font-bold px-8 py-4 rounded-xl hover:bg-brand-50 transition">Email us</a>
+      <a href="https://wa.me/919876543210?text=Hi%20I%27d%20like%20a%20Medrelief%20demo" class="border-2 border-white/30 text-white font-semibold px-8 py-4 rounded-xl hover:bg-white/10 transition">WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-12 border-t border-slate-100">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-brand-800 text-white flex items-center justify-center font-black text-sm">M</div>
+      <span class="font-bold">Medrelief</span>
+    </div>
+    <p class="text-sm text-slate-500">© 2026 Medrelief Diagnostics. LIMS built for rural India.</p>
+    <div class="flex items-center gap-4 text-sm text-slate-500">
+      <a href="#features" class="hover:text-slate-900">Features</a>
+      <a href="#flow" class="hover:text-slate-900">How it works</a>
+      <a href="#contact" class="hover:text-slate-900">Contact</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
