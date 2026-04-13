@@ -1,11 +1,8 @@
-name: Deploy landing page to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
-    paths:
-      - 'website/**'
-      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -18,16 +15,44 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm install --legacy-peer-deps
+
+      - name: Build frontend-v2 PWA
+        run: npm run build --workspace=@medrelief/frontend-v2
+        env:
+          VITE_API_BASE: ${{ vars.VITE_API_BASE }}
+          VITE_BASE_PATH: /medrelief/app/
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp -r website/* _site/
+          mkdir -p _site/app
+          cp -r packages/frontend-v2/dist/* _site/app/
+
+      - uses: actions/configure-pages@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v4
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: website
       - id: deployment
         uses: actions/deploy-pages@v4

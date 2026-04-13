@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: medrelief-backend
+    runtime: node
+    plan: free
+    region: singapore
+    rootDir: packages/backend
+    buildCommand: npm install --legacy-peer-deps && npx prisma generate && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4782
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 8h
+      - key: DEFAULT_TENANT_ID
+        value: 00000000-0000-0000-0000-000000000001
+      - key: EXTRACTION_PROVIDER
+        value: claude
+      # Add the following in Render dashboard (do not commit):
+      # DATABASE_URL (from Neon)
+      # ANTHROPIC_API_KEY
+      # RAZORPAY_KEY_ID
+      # RAZORPAY_KEY_SECRET

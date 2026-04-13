@@ -15,6 +15,24 @@ router.get('/dashboard', requirePermission('billing:read'), async (req: Request,
   } catch (err) { next(err); }
 });
 
+// Previous day pending cases (accessions not yet completed, created before today)
+router.get('/pending-cases', requirePermission('billing:read'), async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const branchId = (req.query.branch_id as string) || req.ctx.branchId;
+    const data = await dashboardService.getPreviousDayPendingCases(req.ctx, branchId);
+    res.json({ data });
+  } catch (err) { next(err); }
+});
+
+// Itemized daily closing view
+router.get('/daily-close/itemized', requirePermission('billing:read'), async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const branchId = (req.query.branch_id as string) || req.ctx.branchId;
+    const data = await dashboardService.getDailyClosingItemized(req.ctx, branchId);
+    res.json({ data });
+  } catch (err) { next(err); }
+});
+
 // Shifts
 router.post('/shifts/open', requirePermission('payment:create'), async (req: Request, res: Response, next: NextFunction) => {
   try {

@@ -8,6 +8,7 @@ import { requirePermission } from '../../shared/middleware/auth-middleware';
 import { generateBillReceipt } from './bill-print';
 import { generateQrDataUrl } from '../../shared/utils/qr-code';
 import { prisma } from '../../config/database';
+import { razorpayService } from './razorpay.service';
 
 const router = Router();
 
@@ -150,17 +151,37 @@ router.get('/bills/:id/print', requirePermission('billing:read'), async (req: Re
 router.post('/upi/generate-qr', requirePermission('payment:create'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { amount, bill_id } = req.body;
-    // Stub: return a UPI deep link (not a real QR image)
     const upiId = 'medrelief@upi';
     const upiLink = `upi://pay?pa=${upiId}&pn=Medrelief&am=${amount}&cu=INR&tn=Bill-${bill_id}`;
-    res.json({
-      data: {
-        upi_link: upiLink,
-        upi_id: upiId,
-        amount,
-        note: 'Stub — generate QR from this UPI link using a QR library on the frontend',
-      },
+    res.json({ data: { upi_link: upiLink, upi_id: upiId, amount } });
+  } catch (err) { next(err); }
+});
+
+// Razorpay — create order
+router.post('/razorpay/order', requirePermission('payment:create'), async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { bill_id, amount } = req.body;
+    if (!bill_id || !amount) {
+      res.status(400).json({ error_code: 'VALIDATION_ERROR', message: 'bill_id and amount required' });
+      return;
+    }
+    const order = await razorpayService.createOrder(req.ctx, bill_id, Number(amount));
+    res.json({ data: order });
+  } catch (err) { next(err); }
+});
+
+// Razorpay — verify payment signature and record
+router.post('/razorpay/verify', requirePermission('payment:create'), async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, bill_id, mode } = req.body;
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !bill_id) {
+      res.status(400).json({ error_code: 'VALIDATION_ERROR', message: 'Missing required fields' });
+      return;
+    }
+    const result = await razorpayService.verifyAndRecord(req.ctx, {
+      razorpay_order_id, razorpay_payment_id, razorpay_signature, bill_id, mode: mode || 'UPI',
     });
+    res.json({ data: result });
   } catch (err) { next(err); }
 });
 

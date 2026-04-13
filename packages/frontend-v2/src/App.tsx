@@ -20,6 +20,8 @@ import SignOffPage from './pages/lab/sign-off';
 
 import DashboardPage from './pages/owner/dashboard';
 import DailyClosePage from './pages/owner/daily-close';
+import DailyClosingItemizedPage from './pages/owner/daily-close-itemized';
+import PendingCasesPage from './pages/owner/pending-cases';
 import BillsListPage from './pages/owner/bills-list';
 import BillDetailPage from './pages/owner/bill-detail';
 import ReportViewerPage from './pages/owner/report-viewer';
@@ -56,6 +58,8 @@ export default function App() {
 
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/daily-close" element={<DailyClosePage />} />
+        <Route path="/daily-close/itemized" element={<DailyClosingItemizedPage />} />
+        <Route path="/pending-cases" element={<PendingCasesPage />} />
         <Route path="/bills" element={<BillsListPage />} />
         <Route path="/bills/:billId" element={<BillDetailPage />} />
         <Route path="/reports/:accessionId" element={<ReportViewerPage />} />

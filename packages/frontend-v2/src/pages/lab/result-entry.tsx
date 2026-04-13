@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { limsApi } from '../../api';
 import { BigButton, Alert, Spinner } from '../../components/ui/primitives';
 import { VoiceButton } from '../../components/common/voice-input';
+import { Check } from 'lucide-react';
 
 export default function ResultEntryPage() {
   const { testOrderId } = useParams<{ testOrderId: string }>();
@@ -28,7 +29,9 @@ export default function ResultEntryPage() {
 
   if (success) return (
     <div className="p-8 text-center">
-      <div className="text-5xl mb-3">✅</div>
+      <div className="w-16 h-16 mx-auto rounded-full bg-green-100 text-green-700 flex items-center justify-center mb-3">
+        <Check size={36} strokeWidth={3} />
+      </div>
       <p className="text-lg font-medium">Saved</p>
     </div>
   );

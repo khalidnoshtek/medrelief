@@ -4,6 +4,7 @@ import { mdmApi, billingApi } from '../../api';
 import { useAuthStore } from '../../store/auth-store';
 import { BigButton, Alert, Spinner } from '../../components/ui/primitives';
 import { useVisit } from './visit-context';
+import { openRazorpay } from '../../utils/razorpay';
 
 export default function PaymentPage() {
   const navigate = useNavigate();
@@ -55,11 +56,45 @@ export default function PaymentPage() {
         packages: [],
       });
 
-      // 3. Record payments
+      // 3. Record payments — CASH is direct, UPI/CARD go through Razorpay
       for (const p of payments) {
         const amt = parseFloat(p.amount);
         if (!amt || amt <= 0) continue;
-        await billingApi.recordPayment({ bill_id: bill.id, mode: p.mode, amount: amt });
+
+        const gatewayModes = ['UPI', 'CARD', 'NETBANKING'];
+        if (gatewayModes.includes(p.mode)) {
+          // Razorpay flow
+          const order = await billingApi.razorpayOrder(bill.id, amt);
+          await new Promise<void>((resolve, reject) => {
+            openRazorpay({
+              key: order.key_id,
+              order_id: order.order_id,
+              amount: order.amount,
+              currency: order.currency,
+              name: 'Medrelief',
+              description: `Bill ${order.bill_number}`,
+              prefill: {
+                name: draft.patientName,
+                contact: draft.mobile,
+              },
+              onSuccess: async (resp) => {
+                try {
+                  await billingApi.razorpayVerify({
+                    ...resp,
+                    bill_id: bill.id,
+                    mode: p.mode,
+                  });
+                  resolve();
+                } catch (e) { reject(e); }
+              },
+              onDismiss: () => reject(new Error('Payment cancelled')),
+              onError: (e) => reject(new Error(e.description || 'Payment failed')),
+            });
+          });
+        } else {
+          // CASH / NEFT / CHEQUE — direct record
+          await billingApi.recordPayment({ bill_id: bill.id, mode: p.mode, amount: amt });
+        }
       }
 
       // 4. Navigate to done with bill id

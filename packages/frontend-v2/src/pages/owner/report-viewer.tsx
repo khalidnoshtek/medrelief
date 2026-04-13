@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { limsApi } from '../../api';
 import { LoadingPage, EmptyState, BigButton } from '../../components/ui/primitives';
+import { FileDown, Mail, MessageCircle, ArrowLeft } from 'lucide-react';
 
 export default function ReportViewerPage() {
   const { accessionId } = useParams<{ accessionId: string }>();
@@ -96,9 +97,17 @@ export default function ReportViewerPage() {
           </div>
 
           <div className="grid grid-cols-3 gap-2">
-            {report.pdf_path && <BigButton tone="primary" onClick={() => limsApi.downloadReport(report.id)}>📄 PDF</BigButton>}
-            <BigButton tone="secondary" onClick={() => resendM.mutate({ reportId: report.id, channel: 'EMAIL' })}>✉️</BigButton>
-            <BigButton tone="success" onClick={() => resendM.mutate({ reportId: report.id, channel: 'WHATSAPP' })}>💬</BigButton>
+            {report.pdf_path && (
+              <BigButton tone="primary" onClick={() => limsApi.downloadReport(report.id)} icon={<FileDown size={18} />}>
+                PDF
+              </BigButton>
+            )}
+            <BigButton tone="secondary" onClick={() => resendM.mutate({ reportId: report.id, channel: 'EMAIL' })} icon={<Mail size={18} />}>
+              Email
+            </BigButton>
+            <BigButton tone="success" onClick={() => resendM.mutate({ reportId: report.id, channel: 'WHATSAPP' })} icon={<MessageCircle size={18} />}>
+              WhatsApp
+            </BigButton>
           </div>
         </>
       )}

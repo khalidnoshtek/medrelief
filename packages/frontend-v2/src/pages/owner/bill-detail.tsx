@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { billingApi, limsApi } from '../../api';
 import { LoadingPage, EmptyState, BigButton } from '../../components/ui/primitives';
+import { Receipt, Tag, FileText } from 'lucide-react';
 
 export default function BillDetailPage() {
   const { billId } = useParams<{ billId: string }>();
@@ -76,12 +77,12 @@ export default function BillDetailPage() {
       )}
 
       <div className="grid grid-cols-2 gap-3">
-        <BigButton tone="secondary" onClick={() => billingApi.printBill(bill.id)}>🧾 Receipt</BigButton>
-        {bill.accession && <BigButton tone="secondary" onClick={() => limsApi.printLabels(bill.accession.id)}>🏷️ Labels</BigButton>}
+        <BigButton tone="secondary" onClick={() => billingApi.printBill(bill.id)} icon={<Receipt size={18} />}>Receipt</BigButton>
+        {bill.accession && <BigButton tone="secondary" onClick={() => limsApi.printLabels(bill.accession.id)} icon={<Tag size={18} />}>Labels</BigButton>}
       </div>
 
       {bill.bill_status === 'PAID' && bill.accession && (
-        <BigButton onClick={viewReport}>View Report</BigButton>
+        <BigButton onClick={viewReport} icon={<FileText size={18} />}>View Report</BigButton>
       )}
     </div>
   );

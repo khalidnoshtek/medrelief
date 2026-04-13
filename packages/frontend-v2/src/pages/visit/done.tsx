@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { billingApi, limsApi } from '../../api';
 import { BigButton, Spinner } from '../../components/ui/primitives';
 import { useVisit } from './visit-context';
+import { Check, Receipt, Tag, FilePlus } from 'lucide-react';
 
 export default function DonePage() {
   const { billId } = useParams<{ billId: string }>();
@@ -38,7 +39,9 @@ export default function DonePage() {
   return (
     <div className="p-5 space-y-5 text-center">
       <div className="pt-6">
-        <div className="w-20 h-20 mx-auto rounded-full bg-green-100 flex items-center justify-center text-5xl mb-3">✅</div>
+        <div className="w-20 h-20 mx-auto rounded-full bg-green-100 text-green-700 flex items-center justify-center mb-3">
+          <Check size={40} strokeWidth={3} />
+        </div>
         <h1 className="text-2xl font-bold text-gray-800">Payment Confirmed</h1>
         <p className="text-gray-500 text-sm mt-1">Accession created. Labels and receipt ready.</p>
       </div>
@@ -59,11 +62,11 @@ export default function DonePage() {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <BigButton tone="secondary" onClick={handlePrintReceipt}>🧾 Receipt</BigButton>
-        <BigButton tone="secondary" onClick={handlePrintLabels}>🏷️ Labels</BigButton>
+        <BigButton tone="secondary" onClick={handlePrintReceipt} icon={<Receipt size={18} />}>Receipt</BigButton>
+        <BigButton tone="secondary" onClick={handlePrintLabels} icon={<Tag size={18} />}>Labels</BigButton>
       </div>
 
-      <BigButton onClick={newVisit}>New Visit</BigButton>
+      <BigButton onClick={newVisit} icon={<FilePlus size={18} />}>New Visit</BigButton>
     </div>
   );
 }

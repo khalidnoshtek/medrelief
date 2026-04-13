@@ -46,6 +46,10 @@ export const billingApi = {
   },
   upiQr: (billId: string, amount: number) =>
     api.post('/billing/upi/generate-qr', { bill_id: billId, amount }).then((r) => r.data.data),
+  razorpayOrder: (billId: string, amount: number) =>
+    api.post('/billing/razorpay/order', { bill_id: billId, amount }).then((r) => r.data.data),
+  razorpayVerify: (data: any) =>
+    api.post('/billing/razorpay/verify', data).then((r) => r.data.data),
 };
 
 export const limsApi = {
@@ -88,4 +92,8 @@ export const financeApi = {
     api.post('/finance/daily-close', { branch_id: branchId }).then((r) => r.data.data),
   getDailyCloseHistory: (branchId: string) =>
     api.get('/finance/daily-close', { params: { branch_id: branchId } }).then((r) => r.data.data),
+  getPendingCases: (branchId: string) =>
+    api.get('/finance/pending-cases', { params: { branch_id: branchId } }).then((r) => r.data.data),
+  getDailyClosingItemized: (branchId: string) =>
+    api.get('/finance/daily-close/itemized', { params: { branch_id: branchId } }).then((r) => r.data.data),
 };

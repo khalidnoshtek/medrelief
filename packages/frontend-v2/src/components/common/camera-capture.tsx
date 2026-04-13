@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { BigButton } from '../ui/primitives';
+import { Camera, Image as ImageIcon, FileImage } from 'lucide-react';
 
 interface Props {
   onCapture: (base64DataUrl: string) => void;
@@ -51,7 +52,9 @@ export function CameraCapture({ onCapture }: Props) {
         </div>
       ) : (
         <div className="bg-gray-100 rounded-2xl border-2 border-dashed border-gray-300 p-8 text-center">
-          <div className="text-5xl mb-3">📷</div>
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-white flex items-center justify-center mb-3 text-gray-400">
+            <FileImage size={36} strokeWidth={1.5} />
+          </div>
           <p className="text-gray-600 mb-1 font-medium">Capture prescription</p>
           <p className="text-gray-400 text-sm">AI will read patient name, age, doctor, tests</p>
         </div>
@@ -66,7 +69,7 @@ export function CameraCapture({ onCapture }: Props) {
             fileRef.current.setAttribute('capture', 'environment');
             fileRef.current.click();
           }}
-          icon={<span>📷</span>}
+          icon={<Camera size={18} />}
         >
           Take Photo
         </BigButton>
@@ -78,7 +81,7 @@ export function CameraCapture({ onCapture }: Props) {
             fileRef.current.removeAttribute('capture');
             fileRef.current.click();
           }}
-          icon={<span>🖼️</span>}
+          icon={<ImageIcon size={18} />}
         >
           Upload
         </BigButton>

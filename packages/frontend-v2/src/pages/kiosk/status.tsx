@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { mdmApi, billingApi } from '../../api';
 import { BigButton, Spinner, EmptyState, Alert } from '../../components/ui/primitives';
 import { QrScanner } from '../../components/common/qr-scanner';
+import { QrCode, Search, ArrowRight } from 'lucide-react';
 
 type Mode = 'patient' | 'doctor' | 'qr';
 
@@ -65,7 +66,7 @@ export default function StatusPage() {
 
       {mode === 'qr' ? (
         <>
-          <BigButton tone="primary" onClick={() => setScannerOpen(true)} icon={<span>📷</span>}>
+          <BigButton tone="primary" onClick={() => setScannerOpen(true)} icon={<QrCode size={18} />}>
             Scan QR Code
           </BigButton>
           <div className="text-center text-xs text-gray-400">or paste QR payload manually</div>
@@ -77,7 +78,7 @@ export default function StatusPage() {
               className="flex-1 px-4 py-3 border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
             />
             <button onClick={search} disabled={!query.trim()} className="bg-blue-600 text-white px-5 rounded-xl font-semibold active:bg-blue-700 disabled:opacity-40">
-              {loading ? <Spinner size="sm" /> : '→'}
+              {loading ? <Spinner size="sm" /> : <ArrowRight size={18} />}
             </button>
           </div>
         </>
@@ -90,7 +91,7 @@ export default function StatusPage() {
             className="flex-1 px-4 py-3 border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
           <button onClick={search} className="bg-blue-600 text-white px-5 rounded-xl font-semibold active:bg-blue-700">
-            {loading ? <Spinner size="sm" /> : '🔍'}
+            {loading ? <Spinner size="sm" /> : <Search size={18} />}
           </button>
         </div>
       )}
