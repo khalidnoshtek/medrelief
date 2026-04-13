@@ -24,10 +24,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
-      - name: Install deps
-        run: npm install --legacy-peer-deps
+      - name: Install deps (fresh, no cache due to rollup optional deps issue)
+        run: |
+          rm -rf node_modules packages/*/node_modules package-lock.json
+          npm install --legacy-peer-deps
 
       - name: Build frontend-v2 PWA
         run: npm run build --workspace=@medrelief/frontend-v2
