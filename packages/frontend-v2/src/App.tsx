@@ -7,6 +7,7 @@ import LoginPage from './pages/login';
 import KioskHome from './pages/kiosk/home';
 import StatusPage from './pages/kiosk/status';
 import PatientDetail from './pages/kiosk/patient-detail';
+import DoctorBillsPage from './pages/kiosk/doctor-bills';
 
 import CapturePage from './pages/visit/capture';
 import VerifyPage from './pages/visit/verify';
@@ -52,6 +53,7 @@ export default function App() {
         <Route path="/home" element={<KioskHome />} />
         <Route path="/status" element={<StatusPage />} />
         <Route path="/patients/:id" element={<PatientDetail />} />
+        <Route path="/doctors/:doctorId/tests" element={<DoctorBillsPage />} />
 
         <Route path="/lab/worklist" element={<WorklistPage />} />
         <Route path="/lab/sign-off" element={<SignOffPage />} />

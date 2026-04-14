@@ -60,13 +60,13 @@ export function AppShell({ children }: { children?: ReactNode }) {
     <div className="min-h-screen bg-gray-50 flex flex-col max-w-3xl mx-auto relative">
       {/* Top bar */}
       <header className="sticky top-0 z-20 bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center">
-        <div className="flex items-center gap-2">
+        <Link to="/home" className="flex items-center gap-2 active:opacity-70">
           <div className="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm font-black">M</div>
           <div>
             <p className="text-sm font-semibold leading-tight">Medrelief</p>
             <p className="text-[10px] text-gray-400 leading-tight">{user.branchName}</p>
           </div>
-        </div>
+        </Link>
         <div className="flex items-center gap-3">
           <div className="text-right">
             <p className="text-xs font-medium leading-tight">{user.fullName}</p>
