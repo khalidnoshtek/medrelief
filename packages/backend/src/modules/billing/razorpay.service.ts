@@ -7,16 +7,15 @@ import { emitDomainEvent } from '../../shared/events/event-emitter';
 import { AppError, NotFoundError } from '../../shared/errors/app-error';
 import { RequestContext } from '../../shared/types/request-context';
 
-let rzpClient: Razorpay | null = null;
 function getClient(): Razorpay {
-  if (rzpClient) return rzpClient;
-  const key_id = process.env.RAZORPAY_KEY_ID;
-  const key_secret = process.env.RAZORPAY_KEY_SECRET;
+  const key_id = process.env.RAZORPAY_KEY_ID?.trim();
+  const key_secret = process.env.RAZORPAY_KEY_SECRET?.trim();
   if (!key_id || !key_secret) {
-    throw new AppError('RAZORPAY_NOT_CONFIGURED', 'Razorpay credentials not set in .env', 500);
+    throw new AppError('RAZORPAY_NOT_CONFIGURED',
+      `Razorpay credentials missing. KEY_ID length: ${key_id?.length || 0}, SECRET length: ${key_secret?.length || 0}`, 500);
   }
-  rzpClient = new Razorpay({ key_id, key_secret });
-  return rzpClient;
+  // Don't cache — fresh client each time so env var changes take effect without restart
+  return new Razorpay({ key_id, key_secret });
 }
 
 export const razorpayService = {
