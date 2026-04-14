@@ -22,8 +22,9 @@ export default function StatusPage() {
       const id = payload.includes('/') ? payload.split(/[\/?=&]/).filter(Boolean).pop() : payload.trim();
       const bill = await billingApi.getByQr(id || payload.trim());
       if (bill) {
-        // Pass bill data via state AND add timestamp to force React to re-render
-        navigate(`/bills/${bill.id}?t=${Date.now()}`, { replace: true, state: { bill } });
+        // Hard navigation — forces full page load, most reliable on mobile after camera use
+        const base = import.meta.env.BASE_URL || '/';
+        window.location.href = `${window.location.origin}${base}bills/${bill.id}`;
         return;
       }
       setError(`No bill found for code: ${id}`);
