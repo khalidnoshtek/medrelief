@@ -58,13 +58,19 @@ export default function PaymentPage() {
 
       // 3. Record payments — CASH is direct, UPI/CARD go through Razorpay
       for (const p of payments) {
-        const amt = parseFloat(p.amount);
-        if (!amt || amt <= 0) continue;
+        // Clean the amount: strip non-numeric chars (mobile keyboards sometimes add commas/spaces)
+        const cleanAmount = String(p.amount).replace(/[^0-9.]/g, '');
+        const amt = Math.round(parseFloat(cleanAmount) || 0);
+        if (amt <= 0) continue;
 
         const gatewayModes = ['UPI', 'CARD', 'NETBANKING'];
         if (gatewayModes.includes(p.mode)) {
-          // Razorpay flow
+          // Razorpay flow — amount must be integer (no decimals)
           const order = await billingApi.razorpayOrder(bill.id, amt);
+
+          // Clean phone: Razorpay mobile requires +91 prefix
+          const phone = draft.mobile ? (draft.mobile.startsWith('+') ? draft.mobile : '+91' + draft.mobile.replace(/^0+/, '')) : undefined;
+
           await new Promise<void>((resolve, reject) => {
             openRazorpay({
               key: order.key_id,
@@ -74,8 +80,8 @@ export default function PaymentPage() {
               name: 'Medrelief',
               description: `Bill ${order.bill_number}`,
               prefill: {
-                name: draft.patientName,
-                contact: draft.mobile,
+                name: draft.patientName || '',
+                contact: phone || '',
               },
               onSuccess: async (resp) => {
                 try {
@@ -88,7 +94,7 @@ export default function PaymentPage() {
                 } catch (e) { reject(e); }
               },
               onDismiss: () => reject(new Error('Payment cancelled')),
-              onError: (e) => reject(new Error(e.description || 'Payment failed')),
+              onError: (e) => reject(new Error(e?.description || e?.message || 'Payment failed')),
             });
           });
         } else {

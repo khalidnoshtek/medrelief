@@ -41,8 +41,9 @@ export default function BillDetailPage() {
   const canPay = ['PENDING_PAYMENT', 'PARTIALLY_PAID'].includes(bill.bill_status) && remaining > 0;
 
   const handlePay = async () => {
-    const amt = parseFloat(payAmount);
-    if (!amt || amt <= 0) return;
+    const cleanAmt = String(payAmount).replace(/[^0-9.]/g, '');
+    const amt = Math.round(parseFloat(cleanAmt) || 0);
+    if (amt <= 0) return;
     setPayLoading(true);
     setPayError('');
     setPaySuccess('');
@@ -50,8 +51,9 @@ export default function BillDetailPage() {
     try {
       const gatewayModes = ['UPI', 'CARD', 'NETBANKING'];
       if (gatewayModes.includes(payMode)) {
-        // Razorpay flow
         const order = await billingApi.razorpayOrder(bill.id, amt);
+        const mobile = bill.visit?.patient?.mobile;
+        const phone = mobile ? (mobile.startsWith('+') ? mobile : '+91' + mobile.replace(/^0+/, '')) : '';
         await new Promise<void>((resolve, reject) => {
           openRazorpay({
             key: order.key_id,
@@ -61,8 +63,8 @@ export default function BillDetailPage() {
             name: 'Medrelief',
             description: `Bill ${order.bill_number}`,
             prefill: {
-              name: bill.visit?.patient?.full_name,
-              contact: bill.visit?.patient?.mobile,
+              name: bill.visit?.patient?.full_name || '',
+              contact: phone,
             },
             onSuccess: async (resp) => {
               try {
