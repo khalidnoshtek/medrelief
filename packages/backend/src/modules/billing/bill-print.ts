@@ -16,7 +16,7 @@ export async function generateBillReceipt(bill: any): Promise<string> {
   const qrBuf = await generateQrBuffer(qrPayload);
 
   return new Promise((resolve, reject) => {
-    const doc = new PDFDocument({ size: [226, 680], margin: 10 });
+    const doc = new PDFDocument({ size: [226, 820], margin: 10 }); // taller to fit QR + footer
     const stream = fs.createWriteStream(filePath);
     doc.pipe(stream);
 
@@ -103,8 +103,10 @@ export async function generateBillReceipt(bill: any): Promise<string> {
     doc.moveDown(0.3);
     try {
       const qrSize = 90;
-      doc.image(qrBuf, (w - qrSize) / 2 + 10, doc.y, { width: qrSize, height: qrSize });
-      doc.moveDown((qrSize / 13));
+      const qrY = doc.y;
+      doc.image(qrBuf, (w - qrSize) / 2 + 10, qrY, { width: qrSize, height: qrSize });
+      // Move cursor past the QR image
+      doc.y = qrY + qrSize + 8;
     } catch {}
     doc.fontSize(6).font('Helvetica').text('Show this QR at the counter anytime', 10, doc.y, { width: w, align: 'center' });
 

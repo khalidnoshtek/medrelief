@@ -15,6 +15,8 @@ export default function BillDetailPage() {
     queryKey: ['bill', billId],
     queryFn: () => billingApi.getBill(billId!),
     enabled: !!billId,
+    refetchOnMount: 'always',
+    staleTime: 0,
   });
 
   // Payment state
