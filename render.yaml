@@ -20,8 +20,10 @@ services:
         value: 00000000-0000-0000-0000-000000000001
       - key: EXTRACTION_PROVIDER
         value: claude
-      # Add the following in Render dashboard (do not commit):
+      - key: RAZORPAY_KEY_ID
+        value: rzp_test_Sd7FMgHEdi4ZLK
+      - key: RAZORPAY_KEY_SECRET
+        value: bSl45kj50OwztM6FX8nS3yZL
+      # Still add manually in Render dashboard:
       # DATABASE_URL (from Neon)
       # ANTHROPIC_API_KEY
-      # RAZORPAY_KEY_ID
-      # RAZORPAY_KEY_SECRET
