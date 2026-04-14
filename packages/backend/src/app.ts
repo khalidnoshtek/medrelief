@@ -18,7 +18,10 @@ export function createApp() {
   const app = express();
 
   // Security & parsing
-  app.use(helmet());
+  app.use(helmet({
+    contentSecurityPolicy: false,   // Disable CSP — this is an API server, not serving HTML
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  }));
   app.use(cors({
     origin: [
       'http://localhost:5174',
