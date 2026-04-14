@@ -157,6 +157,19 @@ router.post('/upi/generate-qr', requirePermission('payment:create'), async (req:
   } catch (err) { next(err); }
 });
 
+// Debug: check razorpay config (temporary — remove after deploy is confirmed)
+router.get('/razorpay/debug', requirePermission('payment:create'), async (_req: Request, res: Response) => {
+  const keyId = process.env.RAZORPAY_KEY_ID?.trim() || '';
+  const secret = process.env.RAZORPAY_KEY_SECRET?.trim() || '';
+  res.json({
+    key_id_set: !!keyId,
+    key_id_length: keyId.length,
+    key_id_prefix: keyId.substring(0, 8) + '...',
+    secret_set: !!secret,
+    secret_length: secret.length,
+  });
+});
+
 // Razorpay — create order
 router.post('/razorpay/order', requirePermission('payment:create'), async (req: Request, res: Response, next: NextFunction) => {
   try {

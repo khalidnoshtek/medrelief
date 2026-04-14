@@ -22,7 +22,7 @@ export default function StatusPage() {
       // QR may be a URL or just an ID — extract last segment
       const id = payload.includes('/') ? payload.split(/[\/?=&]/).filter(Boolean).pop() : payload.trim();
       const bill = await billingApi.getByQr(id || payload.trim());
-      if (bill) { navigate(`/bills/${bill.id}`); return; }
+      if (bill) { navigate(`/bills/${bill.id}`, { replace: true }); return; }
       setError(`No bill found for code: ${id}`);
     } catch (err: any) {
       const msg = err.response?.data?.message || 'QR lookup failed';
@@ -121,7 +121,11 @@ export default function StatusPage() {
 
       {scannerOpen && (
         <QrScanner
-          onScan={(text) => { setScannerOpen(false); lookupByQr(text); }}
+          onScan={(text) => {
+            setScannerOpen(false);
+            // Small delay to let scanner cleanup finish before navigation
+            setTimeout(() => lookupByQr(text), 300);
+          }}
           onClose={() => setScannerOpen(false)}
         />
       )}
