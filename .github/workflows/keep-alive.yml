@@ -1,0 +1,17 @@
+name: Keep Render backend alive
+
+on:
+  schedule:
+    # Every 14 minutes — prevents Render free tier from sleeping
+    - cron: '*/14 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health endpoint
+        run: |
+          curl -sf https://medrelief-backend.onrender.com/health/live || echo "Backend waking up..."
+          sleep 5
+          curl -sf https://medrelief-backend.onrender.com/health/live || echo "Still waking..."
