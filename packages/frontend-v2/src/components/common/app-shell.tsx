@@ -26,10 +26,10 @@ const MENU_BY_ROLE: Record<string, NavItem[]> = {
     { label: 'Status', path: '/status', icon: <Search size={ICON_SIZE} /> },
   ],
   CENTER_HEAD: [
-    { label: 'Home', path: '/home', icon: <Home size={ICON_SIZE} /> },
     { label: 'Dashboard', path: '/dashboard', icon: <BarChart3 size={ICON_SIZE} /> },
     { label: 'Visit', path: '/visit/new', icon: <FilePlus size={ICON_SIZE} /> },
     { label: 'Lab', path: '/lab/worklist', icon: <FlaskConical size={ICON_SIZE} /> },
+    { label: 'Status', path: '/status', icon: <Search size={ICON_SIZE} /> },
     { label: 'Close', path: '/daily-close', icon: <ClipboardList size={ICON_SIZE} /> },
   ],
   FINANCE_MANAGER: [

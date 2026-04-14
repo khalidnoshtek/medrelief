@@ -2,9 +2,21 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { financeService } from './finance.service';
 import { dashboardService } from './dashboard.service';
 import { auditService } from './audit.service';
+import { assistantService } from './assistant.service';
 import { requirePermission } from '../../shared/middleware/auth-middleware';
 
 const router = Router();
+
+// AI Business Assistant
+router.post('/assistant', requirePermission('billing:read'), async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { question } = req.body;
+    if (!question) { res.status(400).json({ error_code: 'VALIDATION_ERROR', message: 'question is required' }); return; }
+    const branchId = (req.body.branch_id as string) || req.ctx.branchId;
+    const answer = await assistantService.ask(req.ctx, branchId, question);
+    res.json({ data: { question, answer } });
+  } catch (err) { next(err); }
+});
 
 // Dashboard
 router.get('/dashboard', requirePermission('billing:read'), async (req: Request, res: Response, next: NextFunction) => {
@@ -24,11 +36,12 @@ router.get('/pending-cases', requirePermission('billing:read'), async (req: Requ
   } catch (err) { next(err); }
 });
 
-// Itemized daily closing view
+// Itemized daily closing view (supports ?date=YYYY-MM-DD for any day)
 router.get('/daily-close/itemized', requirePermission('billing:read'), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const branchId = (req.query.branch_id as string) || req.ctx.branchId;
-    const data = await dashboardService.getDailyClosingItemized(req.ctx, branchId);
+    const date = (req.query.date as string) || undefined;
+    const data = await dashboardService.getDailyClosingItemized(req.ctx, branchId, date);
     res.json({ data });
   } catch (err) { next(err); }
 });

@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { financeApi } from '../../api';
 import { useAuthStore } from '../../store/auth-store';
 import { BigButton, Alert, LoadingPage } from '../../components/ui/primitives';
+import { ChevronRight } from 'lucide-react';
 
 export default function DailyClosePage() {
   const user = useAuthStore((s) => s.user)!;
   const qc = useQueryClient();
   const today = new Date().toISOString().slice(0, 10);
+  const nav = useNavigate();
   const [closing, setClosing] = useState(false);
   const [error, setError] = useState('');
 
@@ -75,13 +78,17 @@ export default function DailyClosePage() {
           <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Recent</p>
           <div className="space-y-2">
             {history.map((h: any) => (
-              <div key={h.id} className="bg-white rounded-xl p-3 shadow-sm flex justify-between items-center">
+              <button key={h.id} onClick={() => nav(`/daily-close/itemized?date=${h.close_date}`)}
+                className="w-full text-left bg-white rounded-xl p-3 shadow-sm flex justify-between items-center active:bg-gray-50">
                 <div>
                   <p className="text-sm font-medium">{h.close_date}</p>
                   <p className="text-xs text-gray-500">{h.total_bills} bills • ₹{Number(h.total_revenue).toFixed(0)}</p>
                 </div>
-                <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{h.status}</span>
-              </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{h.status}</span>
+                  <ChevronRight size={16} className="text-gray-400" />
+                </div>
+              </button>
             ))}
           </div>
         </div>

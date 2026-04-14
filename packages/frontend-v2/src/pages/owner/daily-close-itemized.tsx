@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { financeApi } from '../../api';
 import { useAuthStore } from '../../store/auth-store';
 import { LoadingPage, EmptyState } from '../../components/ui/primitives';
@@ -7,11 +7,12 @@ import { LoadingPage, EmptyState } from '../../components/ui/primitives';
 export default function DailyClosingItemizedPage() {
   const user = useAuthStore((s) => s.user)!;
   const nav = useNavigate();
+  const [searchParams] = useSearchParams();
+  const dateParam = searchParams.get('date') || undefined; // e.g. 2026-04-08
 
   const { data, isLoading } = useQuery({
-    queryKey: ['daily-close-itemized', user.branchId],
-    queryFn: () => financeApi.getDailyClosingItemized(user.branchId),
-    refetchInterval: 30000,
+    queryKey: ['daily-close-itemized', user.branchId, dateParam],
+    queryFn: () => financeApi.getDailyClosingItemized(user.branchId, dateParam),
   });
 
   if (isLoading) return <LoadingPage />;

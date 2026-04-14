@@ -146,8 +146,8 @@ export const dashboardService = {
   /**
    * Itemized daily closing view — all bills created today with payments, per-test breakdown, totals.
    */
-  async getDailyClosingItemized(ctx: RequestContext, branchId: string) {
-    const today = new Date().toISOString().slice(0, 10);
+  async getDailyClosingItemized(ctx: RequestContext, branchId: string, dateParam?: string) {
+    const today = dateParam || new Date().toISOString().slice(0, 10);
     const dayStart = new Date(today + 'T00:00:00');
     const dayEnd = new Date(today + 'T23:59:59.999');
 

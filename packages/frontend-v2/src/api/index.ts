@@ -94,6 +94,8 @@ export const financeApi = {
     api.get('/finance/daily-close', { params: { branch_id: branchId } }).then((r) => r.data.data),
   getPendingCases: (branchId: string) =>
     api.get('/finance/pending-cases', { params: { branch_id: branchId } }).then((r) => r.data.data),
-  getDailyClosingItemized: (branchId: string) =>
-    api.get('/finance/daily-close/itemized', { params: { branch_id: branchId } }).then((r) => r.data.data),
+  getDailyClosingItemized: (branchId: string, date?: string) =>
+    api.get('/finance/daily-close/itemized', { params: { branch_id: branchId, date } }).then((r) => r.data.data),
+  askAssistant: (question: string, branchId?: string) =>
+    api.post('/finance/assistant', { question, branch_id: branchId }).then((r) => r.data.data),
 };

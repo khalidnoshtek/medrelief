@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { financeApi } from '../../api';
 import { useAuthStore } from '../../store/auth-store';
 import { LoadingPage, Alert } from '../../components/ui/primitives';
+import { AssistantChat } from '../../components/common/assistant-chat';
 
 export default function DashboardPage() {
   const user = useAuthStore((s) => s.user)!;
@@ -95,6 +96,9 @@ export default function DashboardPage() {
       {approvals.pending_adjustments > 0 && (
         <Alert tone="warn">{approvals.pending_adjustments} pending adjustment(s) need approval</Alert>
       )}
+
+      {/* AI Business Assistant — floating chat */}
+      <AssistantChat />
     </div>
   );
 }
