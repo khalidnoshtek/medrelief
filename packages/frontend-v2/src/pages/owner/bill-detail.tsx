@@ -1,22 +1,28 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { billingApi, limsApi } from '../../api';
 import { LoadingPage, EmptyState, BigButton, Alert, Spinner } from '../../components/ui/primitives';
 import { Receipt, Tag, FileText, CreditCard } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { openRazorpay } from '../../utils/razorpay';
 
 export default function BillDetailPage() {
   const { billId } = useParams<{ billId: string }>();
   const nav = useNavigate();
   const qc = useQueryClient();
+  const location = useLocation();
+
+  // Force refetch when navigating here (e.g. from QR scan)
+  useEffect(() => {
+    if (billId) {
+      qc.invalidateQueries({ queryKey: ['bill', billId] });
+    }
+  }, [billId, location.key]);
 
   const { data: bill, isLoading } = useQuery({
     queryKey: ['bill', billId],
     queryFn: () => billingApi.getBill(billId!),
     enabled: !!billId,
-    refetchOnMount: 'always',
-    staleTime: 0,
   });
 
   // Payment state

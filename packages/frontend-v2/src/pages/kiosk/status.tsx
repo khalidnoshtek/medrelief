@@ -19,10 +19,13 @@ export default function StatusPage() {
   const lookupByQr = async (payload: string) => {
     setLoading(true); setError(''); setResults([]);
     try {
-      // QR may be a URL or just an ID — extract last segment
       const id = payload.includes('/') ? payload.split(/[\/?=&]/).filter(Boolean).pop() : payload.trim();
       const bill = await billingApi.getByQr(id || payload.trim());
-      if (bill) { navigate(`/bills/${bill.id}`, { replace: true }); return; }
+      if (bill) {
+        // Pass bill data via state AND add timestamp to force React to re-render
+        navigate(`/bills/${bill.id}?t=${Date.now()}`, { replace: true, state: { bill } });
+        return;
+      }
       setError(`No bill found for code: ${id}`);
     } catch (err: any) {
       const msg = err.response?.data?.message || 'QR lookup failed';
