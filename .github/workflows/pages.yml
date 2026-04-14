@@ -42,6 +42,9 @@ jobs:
           cp -r website/* _site/
           mkdir -p _site/app
           cp -r packages/frontend-v2/dist/* _site/app/
+          # SPA fallback: copy index.html to 404.html so GitHub Pages
+          # serves the app for any /app/* route on refresh
+          cp _site/app/index.html _site/app/404.html
 
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3

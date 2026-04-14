@@ -9,10 +9,14 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 20000, retry: 1 } },
 });
 
+// In production (GitHub Pages), base path is /medrelief/app/
+// In dev (localhost), base path is /
+const basePath = import.meta.env.BASE_URL || '/';
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+      <BrowserRouter basename={basePath}>
         <App />
       </BrowserRouter>
     </QueryClientProvider>

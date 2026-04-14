@@ -8,6 +8,17 @@
   </head>
   <body class="bg-gray-50">
     <div id="root"></div>
+    <!-- GitHub Pages SPA: pick up redirect from 404.html -->
+    <script>
+      (function() {
+        var q = window.location.search;
+        var match = q.match(/[?&]p=([^&]*)/);
+        if (match) {
+          var path = decodeURIComponent(match[1]);
+          window.history.replaceState(null, '', path);
+        }
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

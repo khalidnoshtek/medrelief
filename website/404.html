@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Medrelief</title>
+  <script>
+    // GitHub Pages SPA redirect hack
+    // When a user refreshes /medrelief/app/login, GitHub serves this 404.html
+    // We redirect to /medrelief/app/ with the path encoded in a query param
+    // Then index.html picks it up and navigates to the right route
+    var path = window.location.pathname;
+    // Only redirect app routes, not landing page or other paths
+    if (path.startsWith('/medrelief/app')) {
+      var appPath = path.replace('/medrelief/app', '') || '/';
+      window.location.replace('/medrelief/app/?p=' + encodeURIComponent(appPath + window.location.search));
+    } else {
+      // For non-app paths, show the landing page
+      window.location.replace('/medrelief/');
+    }
+  </script>
+</head>
+<body></body>
+</html>
