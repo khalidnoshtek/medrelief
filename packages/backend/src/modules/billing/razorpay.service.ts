@@ -39,20 +39,32 @@ export const razorpayService = {
       throw new AppError('AMOUNT_EXCEEDS_BALANCE', 'Amount exceeds remaining balance', 400, { remaining });
     }
 
-    const client = getClient();
+    let client: Razorpay;
+    try {
+      client = getClient();
+    } catch (e: any) {
+      throw new AppError('RAZORPAY_NOT_CONFIGURED', e.message || 'Razorpay credentials missing', 400);
+    }
+
     const receiptId = `rcpt_${bill.bill_number}_${Date.now()}`.slice(0, 40);
 
-    const order = await client.orders.create({
-      amount: Math.round(amount * 100),      // Razorpay expects paise
-      currency: 'INR',
-      receipt: receiptId,
-      notes: {
-        bill_id: bill.id,
-        bill_number: bill.bill_number,
-        tenant_id: ctx.tenantId,
-        branch_id: bill.branch_id,
-      },
-    });
+    let order: any;
+    try {
+      order = await client.orders.create({
+        amount: Math.round(amount * 100),      // Razorpay expects paise
+        currency: 'INR',
+        receipt: receiptId,
+        notes: {
+          bill_id: bill.id,
+          bill_number: bill.bill_number,
+          tenant_id: ctx.tenantId,
+          branch_id: bill.branch_id,
+        },
+      });
+    } catch (e: any) {
+      const msg = e?.error?.description || e?.message || 'Razorpay order creation failed';
+      throw new AppError('RAZORPAY_ORDER_FAILED', msg, 400, { razorpay_error: e?.error || e?.message });
+    }
 
     return {
       order_id: order.id,
