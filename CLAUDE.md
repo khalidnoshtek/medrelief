@@ -48,6 +48,16 @@ In this repo we maintain these as the **source of truth**:
 
 You must keep these **automatically updated** as you work.
 
+## Automated skills
+
+### `/exit` — End-of-session cleanup (ALWAYS run before ending)
+Updates: PROJECT-STATUS.md, CHANGELOG.md, BACKLOG.md, context-snapshot.
+Syncs: all memory files + key facts to Pinecone vector memory.
+Commits and pushes documentation changes.
+
+### `/test` — Run before presenting ANY code change
+### `/eval` — Run before git push or after major features
+
 ## Automated testing (MANDATORY)
 
 Two skills are available for automated verification:
