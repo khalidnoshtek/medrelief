@@ -14,8 +14,11 @@
         var q = window.location.search;
         var match = q.match(/[?&]p=([^&]*)/);
         if (match) {
-          var path = decodeURIComponent(match[1]);
-          window.history.replaceState(null, '', path);
+          var route = decodeURIComponent(match[1]);
+          // Prepend the base path so the full URL stays correct
+          // In dev: base is "/", in prod: "/medrelief/app/"
+          var base = window.location.pathname.replace(/\/?$/, '');
+          window.history.replaceState(null, '', base + route);
         }
       })();
     </script>
