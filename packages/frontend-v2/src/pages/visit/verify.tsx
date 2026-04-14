@@ -18,16 +18,18 @@ export default function VerifyPage() {
   const [error, setError] = useState('');
   const [addingDoctor, setAddingDoctor] = useState(false);
 
-  // Auto-match referring doctor from extracted name (fuzzy)
+  // Auto-match referring doctor from extracted name
+  // Strict: only match if normalized names are equal OR extracted name contains the full DB name
+  // "Dr. Patel" won't match "Dr. Rajesh Patel" — requires close match to avoid wrong person
   const { data: doctors } = useQuery({ queryKey: ['doctors'], queryFn: mdmApi.getDoctors });
   useEffect(() => {
     if (draft.referrerName && !draft.referrerId && doctors?.length) {
       const n = normName(draft.referrerName);
-      if (!n) return;
-      // Try exact, then contains (both directions)
-      let match = doctors.find((d: any) => normName(d.name) === n);
-      if (!match) match = doctors.find((d: any) => normName(d.name).includes(n) || n.includes(normName(d.name)));
+      if (!n || n.length < 3) return;
+      // Exact normalized match only (e.g. "dr sharma" matches "Dr. Sharma")
+      const match = doctors.find((d: any) => normName(d.name) === n);
       if (match) update({ referrerId: match.id, referrerSpecialty: match.specialty });
+      // If no exact match, don't auto-select — user will see "Add new doctor" banner
     }
   }, [draft.referrerName, doctors, draft.referrerId]);
 
@@ -63,12 +65,12 @@ export default function VerifyPage() {
         <label className="text-xs text-gray-500 font-medium">{label}</label>
         {confidence && <ConfidenceBadge level={confidence} />}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 min-w-0">
         {options ? (
           <select
             value={value || ''}
             onChange={(e) => onChange(e.target.value)}
-            className="flex-1 bg-transparent outline-none text-gray-800 font-medium"
+            className="flex-1 min-w-0 bg-transparent outline-none text-gray-800 font-medium truncate"
           >
             <option value="">—</option>
             {options.map((o: any) => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -79,10 +81,10 @@ export default function VerifyPage() {
             value={value || ''}
             onChange={(e) => onChange(type === 'number' ? (parseInt(e.target.value) || undefined) : e.target.value)}
             placeholder={placeholder}
-            className="flex-1 bg-transparent outline-none text-gray-800 font-medium"
+            className="flex-1 min-w-0 bg-transparent outline-none text-gray-800 font-medium"
           />
         )}
-        {!options && <VoiceButton onText={(t) => onChange(t)} />}
+        {!options && <VoiceButton onText={(t) => onChange(t)} className="shrink-0" />}
       </div>
     </div>
   );
