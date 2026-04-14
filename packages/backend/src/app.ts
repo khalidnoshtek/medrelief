@@ -19,7 +19,15 @@ export function createApp() {
 
   // Security & parsing
   app.use(helmet());
-  app.use(cors());
+  app.use(cors({
+    origin: [
+      'http://localhost:5174',
+      'https://khalidnoshtek.github.io',
+      /\.onrender\.com$/,
+      /\.loca\.lt$/,
+    ],
+    credentials: true,
+  }));
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ limit: '50mb', extended: true }));
   app.use(morgan('short'));

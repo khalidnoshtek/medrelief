@@ -62,7 +62,7 @@ async function run() {
 
   // Get doctors
   const docs = await api('GET', '/mdm/doctors', null, recToken);
-  assert('Load doctors', docs.status === 200 && docs.data.data.length === 5,
+  assert('Load doctors', docs.status === 200 && docs.data.data.length >= 5,
     `${docs.data.data?.length} doctors`);
   const drSharma = docs.data.data.find((d: any) => d.name === 'Dr. Sharma');
   assert('Dr. Sharma found', !!drSharma, drSharma?.id || 'missing');

@@ -1,60 +1,77 @@
 # Changelog
 
+## v0.5.0 — 2026-04-14 — AI-First Kiosk + Razorpay + Deployment
+
+### Added
+- New `packages/frontend-v2/` — complete mobile-first PWA rebuild (kiosk UX)
+- Camera-first new visit flow: capture → AI verify → tests → payment → done with QR
+- AI prescription extraction service (Claude Vision via Anthropic API, provider-agnostic with mock fallback)
+- Voice input on all fields via Web Speech API (bilingual Hindi/English)
+- Doctor auto-match from AI extraction (fuzzy name matching) + "Add new doctor" inline
+- Doctor-specialty test suggestions (static mapping: gynecologist → gyn panel, etc.)
+- Razorpay payment integration (test sandbox: UPI/Card/Netbanking via checkout popup)
+- QR code camera scanner on Status page using html5-qrcode
+- QR code embedded in printed bill receipts (scannable for status lookup)
+- Center Head dashboard: daily operation section (previous day pending, today's cases, closed, in-progress)
+- Pending cases drill-down page (age badge, progress x/y, links to worklist + bill)
+- Daily closing itemized view (every bill, payment mode breakdown, gross/discount/net totals)
+- Professional SVG icons throughout (lucide-react: replaced all emoji icons)
+- Schema additions: prescription_image_url, extracted_data_json, extraction_provider, fasting_status, pregnancy_status, preferred_language, preferred_delivery_channel, qr_code
+- New `POST /api/v1/mdm/doctors` — quick-create doctor from AI extraction
+- New `POST /api/v1/billing/razorpay/order` + `POST /api/v1/billing/razorpay/verify`
+- New `GET /api/v1/finance/pending-cases` + `GET /api/v1/finance/daily-close/itemized`
+- 7 doctors added from Sort March list (12 total in system)
+- GitHub Pages deployment: landing page + PWA at /app/
+- Render blueprint (render.yaml) for one-click backend deploy
+- API client supports VITE_API_BASE env for production backend URL
+- Polished landing page with "Open app" link at khalidnoshtek.github.io/medrelief/
+- Stakeholder brief Word document (docs/Medrelief-Prototype-2.0-Stakeholder-Brief.docx)
+
+### Changed
+- Old `packages/frontend/` deleted (superseded by frontend-v2)
+- Fasting status defaults to NOT_APPLICABLE (not FASTING/NON_FASTING)
+- Express body limit increased to 50MB (for camera photos as base64)
+- Camera capture resizes images to max 1600px before upload
+- `dotenv.config({ override: true })` to handle system ANTHROPIC_API_KEY env
+- AI model configurable via ANTHROPIC_MODEL env (default: claude-haiku-4-5)
+
+### Fixed
+- ₹ symbol rendering: replaced `&#8377;` HTML entities with actual Unicode ₹ in JSX
+- × close button rendering: replaced `&times;` with actual Unicode ×
+- Razorpay SDK loaded on-demand (not bundled)
+
 ## v0.4.0 — 2026-04-09 — Dashboard, Patient History, Platform Features
 
 ### Added
-- Center Head dashboard: today's revenue, bill count, payment mode breakdown, lab status, pending approvals (auto-refreshes every 30s)
-- Patient history page: all visits, bills, test results, reports for a patient
-- Keyboard shortcuts: F2 = New Bill, F4 = Focus Payment amount
-- Audit trail: bill timeline showing domain events, payments, adjustments with timestamps
-- Config settings: tenant/branch-level configuration with 10 default keys (discount limits, rounding, payment modes, alert thresholds)
-- Config API: GET /mdm/config, PUT /mdm/config/:key
-- Dashboard auto-routes Center Head to /finance/dashboard on login
+- Center Head dashboard: revenue, bills, payment mode breakdown, lab status, pending approvals
+- Patient history page: all visits, bills, test results, reports
+- Keyboard shortcuts: F2 = New Bill, F4 = Focus Payment
+- Audit trail: bill timeline (events, payments, adjustments)
+- Config settings: tenant/branch-level with 10 default keys
+- Shared UI: Spinner, LoadingPage, EmptyState, ErrorBanner, SuccessBanner
 
 ## v0.3.0 — 2026-04-08 — Finance & Printing
 
 ### Added
-- Shift open/close with system vs physical count variance calculation
-- Daily reconciliation close with revenue summary by payment mode
-- DailyBranchCloseCompleted domain event
-- Bill receipt print (thermal 80mm PDF format)
-- Barcode label print for accession samples (PDF)
-- UPI payment stub (generates UPI deep link)
-- Daily Close added to receptionist sidebar
-- Finance routes: /finance/shifts/*, /finance/daily-close
+- Shift close with variance, daily reconciliation
+- Bill receipt print (thermal 80mm PDF with embedded QR)
+- Barcode labels with Code 128 (bwip-js)
+- UPI payment stub
 
-## v0.2.0 — 2026-04-08 — Report Generation, Billing Enhancements
+## v0.2.0 — 2026-04-08 — Reports, Billing Enhancements
 
 ### Added
-- PDF report generation (pdfkit)
-- Email dispatch via Nodemailer + Ethereal SMTP
-- WhatsApp dispatch stub
-- Report viewer page with delivery status, Download PDF, Resend buttons
-- Package billing with child test expansion
-- Split payment UI (multiple payment modes per bill)
-- Bill cancellation with inline reason form (before accession only)
-- Credit note / refund via billing_adjustments
-- Rate plan price preview in test picker
-- Bill detail page with Print Receipt, Print Labels, View Report, View Full History
-- Expandable bill list with View Bill, View Report, Cancel Bill actions
+- PDF report generation (pdfkit), email (Nodemailer + Ethereal), WhatsApp stub
+- Report viewer with delivery tracking, resend
+- Package billing, split payments, bill cancellation, credit note/refund
+- Rate plan price preview, bill detail page
 
 ### Fixed
-- Double discount bug: rate plan discount was applied twice on bill creation
-- Pathologist missing lims:create permission
-- Prisma transaction timeout on Neon (increased to 15s)
-- Axios 401 interceptor redirect loop on login
-- Bill cancellation permission (added billing:update to receptionist)
+- Double discount bug, pathologist permissions, Prisma timeout, login redirect loop
 
 ## v0.1.0 — 2026-04-08 — Vertical Slice Prototype
 
 ### Added
-- Project scaffolding: npm workspaces monorepo, TypeScript, Prisma ORM
-- Database schema: 25 tables across 6 modules
-- Auth: JWT login, RBAC with 6 roles and 20 permissions
-- MDM: Patient CRUD, doctor/test/branch/rate-plan endpoints
-- Rate plan resolver: 6-level priority chain with per-test fallback
-- Billing: Bill creation with auto-pricing, payment capture
-- LIMS: Accession, sample tracking, worklist, result entry, sign-off
-- Domain events: BillConfirmed, ResultSignedOff with outbox + handlers
-- Seed data: Demo tenant, 2 branches, 20 tests, 5 rate plans, 5 doctors, 6 users
-- Frontend: Login, New Visit, Bills, Worklist, Result Entry, Sign-Off
+- Greenfield: 25 tables, 6 modules, JWT auth, rate plan resolver
+- Patient → bill → payment → accession → results → sign-off → report
+- React frontend, 37 unit + 48 E2E tests
