@@ -1,11 +1,17 @@
 # Backlog
 
-## Immediate — needs action to go live
+## Immediate — production build prep
 
-- [ ] **Deploy backend to Render** — render.yaml ready, add secrets (DATABASE_URL, ANTHROPIC_API_KEY, RAZORPAY keys) in dashboard
-- [ ] **Set VITE_API_BASE in GitHub repo** — Settings > Variables > `VITE_API_BASE` = `https://medrelief-backend.onrender.com/api/v1`
-- [ ] **Re-run Pages workflow** — after adding the variable, so PWA points to deployed backend
-- [ ] **Run seed on production DB** — `npx tsx prisma/seed.ts` + `npx tsx prisma/seed-new-doctors.ts`
+- [ ] **Set up new production repo** — clean codebase, not forked from prototype
+- [ ] **Implement multi-center org hierarchy** — org_tenants, org_regions, org_centers tables
+- [ ] **Implement 4-tier RBAC** — auth_roles, auth_user_assignments, role switching
+- [ ] **Implement approval chains** — approval_chains, approval_requests, approval_decisions tables
+- [ ] **Build notification system** — domain events > routing > multi-channel delivery
+- [ ] **Integrate WhatsApp Business API** — patient report delivery, template approval
+- [ ] **Build conversational AI voice assistant** — Siri-style, all roles, Hindi+English
+- [ ] **Build in-app report viewer** — replace PDF-first download with action bar
+- [ ] **Transaction-level tracking** — document_id, main status + sub-status model
+- [ ] **Discount/write-off workflow** — override at pickup, approval routing, post-settlement lock
 
 ## Phase 2 — deferred
 
@@ -46,3 +52,8 @@
 - [x] ~~Doctor auto-add from AI extraction~~ (v0.5)
 - [x] ~~GitHub Pages + Render deployment~~ (v0.5)
 - [x] ~~Landing page~~ (v0.5)
+- [x] ~~Prototype Flow Document (16 screenshots)~~ (v0.6.1)
+- [x] ~~TimeFlow Auth Flow Document (13 screenshots)~~ (v0.6.1)
+- [x] ~~PRD v3.0 with sections 15-20 + 29 screenshots~~ (v0.6.1)
+- [x] ~~Auth model design (4-tier RBAC + multi-center)~~ (v0.6.1)
+- [x] ~~Product vision codified (AI-first LIMS)~~ (v0.6.1)

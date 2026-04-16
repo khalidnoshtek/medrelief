@@ -1,8 +1,8 @@
 # Project Status
 
-## Current State: v0.6.0 — Live on GitHub Pages + Render
+## Current State: v0.6.0 — Live on GitHub Pages + Render | PRD v3.0 Ready
 
-**Date**: 2026-04-14
+**Date**: 2026-04-16
 
 ## Live URLs
 
@@ -58,6 +58,29 @@
 - **AI**: Claude Vision (prescription OCR) + Claude Haiku (business assistant)
 - **Payments**: Razorpay test sandbox
 - **Deployment**: GitHub Pages (frontend) + Render (backend)
+
+### v0.6.1 — Documentation Sprint (2026-04-16)
+- [x] Prototype Flow Document: 16 mobile screenshots (390x844), end-to-end patient journey (Medrelief-Prototype-Flow.docx)
+- [x] TimeFlow Auth Flow Document: 13 screenshots, authorization model analysis (TimeFlow-Auth-Flow.docx)
+- [x] Prototype Feedback + Additions: stakeholder review capture (PROTOTYPE-FEEDBACK-ADDITIONS.md, 8 sections)
+- [x] Combined Phase 1 Requirements doc: Medrelief-Phase1-Requirements.docx (standalone, 16 screenshots + all additions)
+- [x] PRD v3.0: Original PRD sections 1-14 intact + sections 15-20 added (production additions, auth model, new features, 29 screenshots embedded)
+- [x] Product vision codified: AI-first LIMS, kiosk-style, Siri/Alexa voice assistant for all roles, prototype = product spec
+- [x] Authorization model designed: 4-tier RBAC (Super Admin > Center Head > Dept Lead > Staff), role switching, multi-center org hierarchy, approval chains, notification routing
+- [x] DB schema proposed: 8 new tables (org_tenants, org_regions, org_centers, auth_roles, auth_user_assignments, approval_chains, approval_requests, approval_decisions, notifications)
+
+## Production Build Plan
+
+The prototype IS the product. Production will be built from scratch in a new repo with the same AI-first flow (scan prescription > AI extract > confirm > pay > auto-accession > lab > sign-off > auto-report > WhatsApp delivery). Key additions over prototype:
+
+- Multi-center org hierarchy (Tenant > Region > Center > Sub-center)
+- 4-tier RBAC with approval chains (discount overrides, write-offs, amendments)
+- Siri/Alexa-style AI voice assistant for ALL roles (not just receptionist)
+- Transaction-level tracking with main status + sub-status
+- WhatsApp Business API for patient report delivery
+- In-app report viewer (replace PDF-first download)
+- Role-based notifications (multi-channel: in-app, WhatsApp, push)
+- Settlement rule: bill not settled until report delivered
 
 ## What Remains
 
