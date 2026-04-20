@@ -30,24 +30,43 @@ Don't block development on all prerequisites. Split into three lanes that run in
 ## 2. Day 0 Prerequisites (before first commit)
 
 ### 2.1 Accounts + keys
-- **GitHub:** create new repo `noshtek-lab/medrelief-prod` (private) in the existing `noshtek-lab` org. Do NOT fork prototype. Fresh repo.
+- **GitHub:** create new repo `Noshtek-lab/medlabok` (private) in the existing `noshtek-lab` org. Do NOT fork prototype. Fresh repo.
 - **Neon:** create project in **`ap-south-1` (Mumbai)** — see section 5 for rationale. Two branches: `dev`, `staging`. Prod DB created later.
 - **Anthropic Console:** create API key. Separate keys per env (`dev`, `staging`, `prod`) — makes cost attribution clean.
 - **Domain:** register `medrelief.app` or similar (even if you don't point DNS yet).
 - **Sentry:** project + DSN. Free tier is fine for dev.
 
-### 2.2 Remote dev machine
-- Mac Studio in USA (your physical machine).
-- Install on the Mac: Xcode CLI tools, Homebrew, Node.js 22 LTS, pnpm, Docker Desktop, Git, Postgres CLI, tmux, mosh.
-- Install **Claude Code on the Mac Studio** — this is the key move. Don't run Claude Code from your India Windows laptop and SSH into the Mac to execute bash. Run Claude natively where the code is.
-- SSH setup: key-based auth from your India laptop. Use **Tailscale** (free, works great India↔USA) or **Mosh** (better than SSH over high-latency links) for stable connection.
-- Session persistence: always work inside `tmux` on the Mac. SSH drops don't kill your Claude session.
-- Port forward for local testing: `ssh -L 4782:localhost:4782 mac-studio` lets you hit `localhost:4782` from your India laptop's browser to test the dev server running in USA.
+### 2.2 Remote dev machine (already set up by Khalid)
+- ✅ Mac Studio in USA is online, Tailscale configured, Claude Code chat active from the Mac.
+- No further setup required on this front.
+- If ever rebuilding: install Xcode CLI tools, Homebrew, Node.js 22 LTS, pnpm, Docker Desktop, Git, Postgres CLI, tmux, mosh; install Claude Code; key-based SSH via Tailscale; tmux for session persistence.
 
-### 2.3 Running Claude Code across the split
-- **Primary pattern:** SSH to Mac via Tailscale + `tmux` + `claude` CLI. Everything runs on the Mac. Your laptop is a thin terminal.
-- **Mobile pattern:** from Mac's `claude` session, use `/remote-control` to get a URL. Open in your phone browser to continue on mobile while away from laptop.
-- **Do NOT:** run Claude Code on your Windows laptop pointing at files on the Mac. Latency kills every tool call.
+### 2.3 Auth to clone the private prototype from Mac Studio
+The prototype repo (`khalidnoshtek/medrelief`) is private. To clone it on the Mac Studio, pick one:
+
+**Option A — GitHub CLI (recommended, simplest):**
+```bash
+# On Mac Studio
+brew install gh
+gh auth login   # pick GitHub.com > HTTPS > authenticate in browser
+gh repo clone khalidnoshtek/medrelief reference
+```
+
+**Option B — Personal Access Token (HTTPS):**
+```bash
+# Create a fine-grained PAT at github.com/settings/tokens (read-only, private repo scope)
+# Then:
+git clone https://<PAT>@github.com/khalidnoshtek/medrelief.git reference
+```
+
+**Option C — SSH key:**
+```bash
+ssh-keygen -t ed25519 -C "mac-studio-dev"
+cat ~/.ssh/id_ed25519.pub   # paste into github.com/settings/keys
+git clone git@github.com:khalidnoshtek/medrelief.git reference
+```
+
+Use the same auth method for the new `Noshtek-lab/medlabok` repo. gh CLI scales cleanly to both.
 
 ---
 
@@ -57,7 +76,7 @@ Don't block development on all prerequisites. Split into three lanes that run in
 **Monorepo** using pnpm workspaces. Same pattern as prototype worked well, scale it up:
 
 ```
-medrelief-prod/
+medlabok/
 ├── packages/
 │   ├── backend/               Express + TS + Prisma (one deployable)
 │   ├── frontend-staff/        Staff kiosk PWA
@@ -253,8 +272,8 @@ The prototype repo (`khalidnoshtek/medrelief`) is **live in production**. Real u
 │   ├── TimeFlow-Auth-Flow.docx
 │   └── prod-plan/
 │
-└── medrelief-prod/         NEW production repo — where all development happens
-    └── [noshtek-lab/medrelief-prod, fresh greenfield]
+└── medlabok/         NEW production repo — where all development happens
+    └── [Noshtek-lab/medlabok, fresh greenfield]
 ```
 
 ### 8.2 Hard isolation rules (non-negotiable)
@@ -317,21 +336,52 @@ chmod -R u-w reference
 # Step 3 — Build docs-seed/ from reference/ (copies, not symlinks)
 # -----------------------------------------------------------------
 mkdir -p docs-seed/prod-plan
+
+# Planning + process MDs
 cp reference/docs/CLAUDE-PRODUCTION.md docs-seed/
 cp reference/docs/PRD-SATURDAY-DECISIONS.md docs-seed/
 cp reference/docs/PRODUCTION-BUILD-STRATEGY.md docs-seed/
 cp reference/docs/EVAL-STRATEGY.md docs-seed/
+cp reference/docs/GUIDELINES.md docs-seed/
+cp reference/docs/ARCHITECTURE.md docs-seed/
+cp reference/docs/LIMS-FLOWS.md docs-seed/
+cp reference/docs/PROTOTYPE-FEEDBACK-ADDITIONS.md docs-seed/
+
+# Status + backlog (will reset, but keep as starting point)
+cp reference/docs/PROJECT-STATUS.md docs-seed/
+cp reference/docs/BACKLOG.md docs-seed/
+cp reference/docs/CHANGELOG.md docs-seed/
+
+# Style + writing guides — MUST travel with the repo so Claude follows them
+cp "reference/docs/ANTI AI WRITING STYLE.md" docs-seed/
+cp "reference/docs/CLAUDE PROMPTING COOKBOOK.md" docs-seed/
+cp "reference/docs/COPYWRITING.md" docs-seed/
+cp "reference/docs/MARKETING GENIUS.md" docs-seed/
+
+# PRD + supporting docx artifacts
 cp reference/docs/Medrelief_ERP_PRD_v3.2-Phase-1.docx docs-seed/
 cp reference/docs/Medrelief-Prototype-Flow.docx docs-seed/
 cp reference/docs/TimeFlow-Auth-Flow.docx docs-seed/
+cp reference/docs/Medrelief-Phase1-Requirements.docx docs-seed/
+cp reference/docs/Medrelief-Prototype-2.0-Stakeholder-Brief.docx docs-seed/
+cp reference/docs/Medrelief-Stakeholder-Testing-Guide.docx docs-seed/
+cp reference/docs/Medrelief-Flow-Document.pdf docs-seed/ 2>/dev/null || true
+
+# Prod-plan folder (req+eval templates, README)
 cp -r reference/docs/prod-plan/* docs-seed/prod-plan/
+
+# Screenshot folders (reference images for the UX target)
+mkdir -p docs-seed/flow-screenshots docs-seed/timeflow-screenshots
+cp reference/docs/flow-screenshots/*.png docs-seed/flow-screenshots/ 2>/dev/null || true
+cp reference/docs/timeflow-screenshots/*.png docs-seed/timeflow-screenshots/ 2>/dev/null || true
+
 # docs-seed is editable — it's YOUR working copy. reference/ stayed untouched.
 
 # -----------------------------------------------------------------
 # Step 4 — Create the new production repo and seed it
 # -----------------------------------------------------------------
-gh repo create noshtek-lab/medrelief-prod --private --confirm
-git clone https://github.com/noshtek-lab/medrelief-prod.git
+gh repo create Noshtek-lab/medlabok --private --confirm
+git clone https://github.com/Noshtek-lab/medlabok.git
 cd medrelief-prod
 
 mkdir -p docs
@@ -411,8 +461,8 @@ Exactly what to do first when you sit down to start:
 
 1. [ ] SSH into Mac Studio via Tailscale, start `tmux`, launch `claude` CLI.
 2. [ ] **Set up reference + docs-seed + new repo per Section 8.3.**
-3. [ ] Create `noshtek-lab/medrelief-prod` GitHub repo (private) — done in Section 8.3 Step 4.
-4. [ ] `pnpm init -w` monorepo inside `medrelief-prod/`. Create the `packages/` folders.
+3. [ ] Create `Noshtek-lab/medlabok` GitHub repo (private) — done in Section 8.3 Step 4.
+4. [ ] `pnpm init -w` monorepo inside `medlabok/`. Create the `packages/` folders.
 5. [ ] Update seeded `CLAUDE.md` with the reference-repo preamble from Section 8.4.
 6. [ ] Provision Neon project + `dev`/`staging` branches in `ap-south-1`. Set `DATABASE_URL_DEV` in GitHub Secrets.
 7. [ ] Set up Anthropic API key (separate dev key). Add to secrets.
@@ -454,7 +504,7 @@ If any of these slip, the bottleneck is usually (a) too many open feature branch
 - **Remote connection:** Tailscale from India laptop → Mac Studio. Location-agnostic. `tmux` + `mosh` optional enhancement.
 - **Backend deploy:** Render (same as prototype). Known stack, no new learning curve.
 - **Frontend deploy:** Cloudflare Pages. Global CDN, free for multiple projects (staff + patient + B2B portals each get their own Pages project).
-- **GitHub org:** `noshtek-lab` (existing org, already Claude-integrated). New repo: `noshtek-lab/medrelief-prod`.
+- **GitHub org:** `noshtek-lab` (existing org, already Claude-integrated). New repo: `Noshtek-lab/medlabok`.
 - **Repo layout:** Monorepo with pnpm workspaces (default recommendation, no objection raised).
 
 ---
