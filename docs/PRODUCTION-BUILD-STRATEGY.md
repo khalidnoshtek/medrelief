@@ -232,15 +232,188 @@ Per Mithlesh's methodology (eval-driven dev) + multi-agent verifier pattern:
 
 ---
 
-## 8. Day 1 Execution Checklist
+## 8. Remote Server Bootstrap — Reference + Production Isolation
+
+The prototype repo (`khalidnoshtek/medrelief`) is **live in production**. Real users can hit it. Under no circumstances should the remote dev setup accidentally push to it, edit it, or redeploy it. This section defines hard isolation.
+
+### 8.1 Folder layout on Mac Studio
+
+```
+~/code/medrelief/
+├── reference/              CLONE of live prototype — READ-ONLY, NEVER EDITED
+│   └── [khalidnoshtek/medrelief files, stripped of git remote]
+│
+├── docs-seed/              Extracted planning docs used to seed new repo
+│   ├── CLAUDE-PRODUCTION.md
+│   ├── PRD-SATURDAY-DECISIONS.md
+│   ├── PRODUCTION-BUILD-STRATEGY.md
+│   ├── EVAL-STRATEGY.md
+│   ├── Medrelief_ERP_PRD_v3.2-Phase-1.docx
+│   ├── Medrelief-Prototype-Flow.docx
+│   ├── TimeFlow-Auth-Flow.docx
+│   └── prod-plan/
+│
+└── medrelief-prod/         NEW production repo — where all development happens
+    └── [noshtek-lab/medrelief-prod, fresh greenfield]
+```
+
+### 8.2 Hard isolation rules (non-negotiable)
+
+These prevent any accidental touch of the live prototype:
+
+1. **Remove git remote from the reference clone.** Even if Claude or a shell typo tries to push, there's nowhere to push to.
+2. **Revoke write permissions at the filesystem level.** The OS refuses writes before they happen.
+3. **Put an explicit banner in `reference/README.md`.** If anyone opens the folder, the first thing they see is "read-only, do not edit."
+4. **Never `git pull` inside reference/.** If the prototype ever needs a refresh, nuke the folder and re-clone. No git operations in reference/ besides the initial clone.
+5. **Never mount reference/ as a working directory in Claude Code or any editor.** Open it only with read-only tools (`less`, `cat`, `grep`, `bat`). Tell Claude explicitly to treat it read-only.
+
+### 8.3 Setup commands (Day 1)
+
+Run these on the Mac Studio via SSH + tmux. Each step is idempotent and safe.
+
+```bash
+# Land in the parent folder
+mkdir -p ~/code/medrelief && cd ~/code/medrelief
+
+# -----------------------------------------------------------------
+# Step 1 — Clone prototype as READ-ONLY REFERENCE (never edited)
+# -----------------------------------------------------------------
+git clone https://github.com/khalidnoshtek/medrelief.git reference
+cd reference
+
+# Remove the remote — safety net against accidental push
+git remote remove origin
+
+# Optional: switch to a detached HEAD so commits are impossible
+git checkout --detach
+
+# Drop a banner so anyone (including Claude) sees it's read-only
+cat > READ-ONLY.md <<'EOF'
+# READ-ONLY REFERENCE
+
+This folder is a clone of the LIVE prototype (khalidnoshtek/medrelief).
+It is kept as a reference for patterns and flows ONLY.
+
+RULES:
+- Do NOT edit any file in this folder.
+- Do NOT run `git push` from here.
+- Do NOT run `git pull` from here.
+- Do NOT use this folder as a working directory in Claude Code.
+- If you need to refresh the reference: `rm -rf reference && git clone ...`.
+EOF
+
+cd ..
+
+# -----------------------------------------------------------------
+# Step 2 — Revoke filesystem write perms (belt + suspenders)
+# -----------------------------------------------------------------
+chmod -R u-w reference
+# Verify: `touch reference/test` should fail with "Permission denied"
+
+# To temporarily re-enable (for a deliberate refresh):
+#   chmod -R u+w reference && rm -rf reference && git clone ...
+
+# -----------------------------------------------------------------
+# Step 3 — Build docs-seed/ from reference/ (copies, not symlinks)
+# -----------------------------------------------------------------
+mkdir -p docs-seed/prod-plan
+cp reference/docs/CLAUDE-PRODUCTION.md docs-seed/
+cp reference/docs/PRD-SATURDAY-DECISIONS.md docs-seed/
+cp reference/docs/PRODUCTION-BUILD-STRATEGY.md docs-seed/
+cp reference/docs/EVAL-STRATEGY.md docs-seed/
+cp reference/docs/Medrelief_ERP_PRD_v3.2-Phase-1.docx docs-seed/
+cp reference/docs/Medrelief-Prototype-Flow.docx docs-seed/
+cp reference/docs/TimeFlow-Auth-Flow.docx docs-seed/
+cp -r reference/docs/prod-plan/* docs-seed/prod-plan/
+# docs-seed is editable — it's YOUR working copy. reference/ stayed untouched.
+
+# -----------------------------------------------------------------
+# Step 4 — Create the new production repo and seed it
+# -----------------------------------------------------------------
+gh repo create noshtek-lab/medrelief-prod --private --confirm
+git clone https://github.com/noshtek-lab/medrelief-prod.git
+cd medrelief-prod
+
+mkdir -p docs
+cp ../docs-seed/CLAUDE-PRODUCTION.md CLAUDE.md   # seeds repo-level CLAUDE.md
+cp ../docs-seed/PRD-SATURDAY-DECISIONS.md docs/
+cp ../docs-seed/PRODUCTION-BUILD-STRATEGY.md docs/
+cp ../docs-seed/EVAL-STRATEGY.md docs/
+cp ../docs-seed/*.docx docs/
+cp -r ../docs-seed/prod-plan docs/
+
+# Continue with pnpm init, packages/ folders, .gitignore, etc.
+# per the Day 1 checklist in Section 9 below.
+```
+
+### 8.4 CLAUDE.md in the new repo — reference pointer
+
+The new repo's `CLAUDE.md` needs a preamble that tells Claude about the reference folder and its read-only discipline. Add this at the top:
+
+```markdown
+# Reference repo (READ-ONLY)
+
+The working prototype is at `../reference/`. Treat it as a reference library.
+
+Allowed:
+- Read files to understand prototype patterns.
+- Grep for how a problem was solved.
+- Quote small snippets (with attribution) in commit messages or ADRs.
+
+Forbidden:
+- Editing any file in `../reference/`.
+- Copy-pasting code from `../reference/` into this repo. Always write fresh.
+- Running `git` commands in `../reference/` (the remote is removed anyway).
+- Referring to `../reference/` as "the codebase" — THIS repo is the codebase.
+
+Useful lookups in the reference:
+- `../reference/packages/frontend-v2/src/pages/` — prototype UX patterns per screen.
+- `../reference/packages/backend/src/modules/` — prototype service/controller patterns.
+- `../reference/prisma/schema.prisma` — prototype DB schema (production schema will differ per DECISION-06).
+- `../reference/docs/LIMS-FLOWS.md` — canonical clinical flow definitions.
+
+[... rest of CLAUDE-PRODUCTION.md content ...]
+```
+
+### 8.5 Why this doesn't hinder live production
+
+- **No network path from reference to prototype remote.** Remote was removed in Step 1.
+- **No filesystem write on reference.** `chmod -R u-w` makes it impossible.
+- **No deploy pipeline in reference.** The Render deploy (live backend) is triggered by pushes to `khalidnoshtek/medrelief` on GitHub — not by anything local. Your local reference folder has no connection to that.
+- **No shared DB.** The prototype uses its own Neon project. Production will get a separate Neon project in Mumbai. Credentials don't overlap.
+- **No shared secrets.** Production uses new Anthropic / Razorpay keys.
+
+The only way live production can break from the remote dev setup is if someone force-pushes to `khalidnoshtek/medrelief` main from somewhere. That someone would not be the Mac Studio, because its `reference/` clone has no remote to push to.
+
+### 8.6 Pulling reference updates later (rare)
+
+If the prototype gets a hot-fix and you want to see it in reference:
+
+```bash
+cd ~/code/medrelief
+chmod -R u+w reference
+rm -rf reference
+git clone https://github.com/khalidnoshtek/medrelief.git reference
+cd reference
+git remote remove origin
+git checkout --detach
+cd ..
+chmod -R u-w reference
+```
+
+Don't `git pull` — just nuke and re-clone. Keeps the "no git ops" rule clean.
+
+---
+
+## 9. Day 1 Execution Checklist
 
 Exactly what to do first when you sit down to start:
 
 1. [ ] SSH into Mac Studio via Tailscale, start `tmux`, launch `claude` CLI.
-2. [ ] Create `noshtek-lab/medrelief-prod` GitHub repo (private). Push empty README + `.gitignore`.
-3. [ ] `pnpm init -w` monorepo. Create the `packages/` folders.
-4. [ ] Copy from prototype repo: `docs/CLAUDE-PRODUCTION.md` → new repo `CLAUDE.md`. Adjust paths to point inside the new repo.
-5. [ ] Copy `docs/prod-plan/` (with templates + README), `docs/EVAL-STRATEGY.md`, `docs/PRD-SATURDAY-DECISIONS.md`, `docs/Medrelief_ERP_PRD_v3.2-Phase-1.docx` into new repo.
+2. [ ] **Set up reference + docs-seed + new repo per Section 8.3.**
+3. [ ] Create `noshtek-lab/medrelief-prod` GitHub repo (private) — done in Section 8.3 Step 4.
+4. [ ] `pnpm init -w` monorepo inside `medrelief-prod/`. Create the `packages/` folders.
+5. [ ] Update seeded `CLAUDE.md` with the reference-repo preamble from Section 8.4.
 6. [ ] Provision Neon project + `dev`/`staging` branches in `ap-south-1`. Set `DATABASE_URL_DEV` in GitHub Secrets.
 7. [ ] Set up Anthropic API key (separate dev key). Add to secrets.
 8. [ ] Create Razorpay account, grab test keys. Add to secrets.
@@ -253,7 +426,7 @@ Exactly what to do first when you sit down to start:
 
 ---
 
-## 9. Critical files to reference (from prototype docs)
+## 10. Critical files to reference (from prototype docs)
 
 - `docs/CLAUDE-PRODUCTION.md` — Claude instructions template for new repo.
 - `docs/PRD-SATURDAY-DECISIONS.md` — decisions 06–13.
@@ -264,7 +437,7 @@ Exactly what to do first when you sit down to start:
 
 ---
 
-## 10. Verification (how you know the strategy is working)
+## 11. Verification (how you know the strategy is working)
 
 - [ ] Day 1: empty monorepo pushed to `main`, CI passing on an empty build, branch protection enforced.
 - [ ] Week 1: first feature pair (`01-scan-registration`) FROZEN, feature branch open, Claude building against frozen evals.
@@ -276,7 +449,7 @@ If any of these slip, the bottleneck is usually (a) too many open feature branch
 
 ---
 
-## 11. Locked decisions (answered)
+## 12. Locked decisions (answered)
 
 - **Remote connection:** Tailscale from India laptop → Mac Studio. Location-agnostic. `tmux` + `mosh` optional enhancement.
 - **Backend deploy:** Render (same as prototype). Known stack, no new learning curve.
@@ -286,7 +459,7 @@ If any of these slip, the bottleneck is usually (a) too many open feature branch
 
 ---
 
-## 12. Out of scope for this strategy doc
+## 13. Out of scope for this strategy doc
 
 - Detailed per-feature code plans — those live in `docs/prod-plan/NN-*.req.md`.
 - Business copy / patient-facing messaging.
