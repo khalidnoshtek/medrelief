@@ -30,7 +30,7 @@ Don't block development on all prerequisites. Split into three lanes that run in
 ## 2. Day 0 Prerequisites (before first commit)
 
 ### 2.1 Accounts + keys
-- **GitHub:** create new repo `Noshtek-lab/medlabok` (private) in the existing `noshtek-lab` org. Do NOT fork prototype. Fresh repo.
+- **GitHub:** create new repo `Noshtek-lab/medlab` (private) in the existing `noshtek-lab` org. Do NOT fork prototype. Fresh repo.
 - **Neon:** create project in **`ap-south-1` (Mumbai)** — see section 5 for rationale. Two branches: `dev`, `staging`. Prod DB created later.
 - **Anthropic Console:** create API key. Separate keys per env (`dev`, `staging`, `prod`) — makes cost attribution clean.
 - **Domain:** register `medrelief.app` or similar (even if you don't point DNS yet).
@@ -66,7 +66,7 @@ cat ~/.ssh/id_ed25519.pub   # paste into github.com/settings/keys
 git clone git@github.com:khalidnoshtek/medrelief.git reference
 ```
 
-Use the same auth method for the new `Noshtek-lab/medlabok` repo. gh CLI scales cleanly to both.
+Use the same auth method for the new `Noshtek-lab/medlab` repo. gh CLI scales cleanly to both.
 
 ---
 
@@ -76,7 +76,7 @@ Use the same auth method for the new `Noshtek-lab/medlabok` repo. gh CLI scales 
 **Monorepo** using pnpm workspaces. Same pattern as prototype worked well, scale it up:
 
 ```
-medlabok/
+medlab/
 ├── packages/
 │   ├── backend/               Express + TS + Prisma (one deployable)
 │   ├── frontend-staff/        Staff kiosk PWA
@@ -272,8 +272,8 @@ The prototype repo (`khalidnoshtek/medrelief`) is **live in production**. Real u
 │   ├── TimeFlow-Auth-Flow.docx
 │   └── prod-plan/
 │
-└── medlabok/         NEW production repo — where all development happens
-    └── [Noshtek-lab/medlabok, fresh greenfield]
+└── medlab/         NEW production repo — where all development happens
+    └── [Noshtek-lab/medlab, fresh greenfield]
 ```
 
 ### 8.2 Hard isolation rules (non-negotiable)
@@ -380,8 +380,8 @@ cp reference/docs/timeflow-screenshots/*.png docs-seed/timeflow-screenshots/ 2>/
 # -----------------------------------------------------------------
 # Step 4 — Create the new production repo and seed it
 # -----------------------------------------------------------------
-gh repo create Noshtek-lab/medlabok --private --confirm
-git clone https://github.com/Noshtek-lab/medlabok.git
+gh repo create Noshtek-lab/medlab --private --confirm
+git clone https://github.com/Noshtek-lab/medlab.git
 cd medrelief-prod
 
 mkdir -p docs
@@ -461,8 +461,8 @@ Exactly what to do first when you sit down to start:
 
 1. [ ] SSH into Mac Studio via Tailscale, start `tmux`, launch `claude` CLI.
 2. [ ] **Set up reference + docs-seed + new repo per Section 8.3.**
-3. [ ] Create `Noshtek-lab/medlabok` GitHub repo (private) — done in Section 8.3 Step 4.
-4. [ ] `pnpm init -w` monorepo inside `medlabok/`. Create the `packages/` folders.
+3. [ ] Create `Noshtek-lab/medlab` GitHub repo (private) — done in Section 8.3 Step 4.
+4. [ ] `pnpm init -w` monorepo inside `medlab/`. Create the `packages/` folders.
 5. [ ] Update seeded `CLAUDE.md` with the reference-repo preamble from Section 8.4.
 6. [ ] Provision Neon project + `dev`/`staging` branches in `ap-south-1`. Set `DATABASE_URL_DEV` in GitHub Secrets.
 7. [ ] Set up Anthropic API key (separate dev key). Add to secrets.
@@ -504,7 +504,7 @@ If any of these slip, the bottleneck is usually (a) too many open feature branch
 - **Remote connection:** Tailscale from India laptop → Mac Studio. Location-agnostic. `tmux` + `mosh` optional enhancement.
 - **Backend deploy:** Render (same as prototype). Known stack, no new learning curve.
 - **Frontend deploy:** Cloudflare Pages. Global CDN, free for multiple projects (staff + patient + B2B portals each get their own Pages project).
-- **GitHub org:** `noshtek-lab` (existing org, already Claude-integrated). New repo: `Noshtek-lab/medlabok`.
+- **GitHub org:** `noshtek-lab` (existing org, already Claude-integrated). New repo: `Noshtek-lab/medlab`.
 - **Repo layout:** Monorepo with pnpm workspaces (default recommendation, no objection raised).
 
 ---
