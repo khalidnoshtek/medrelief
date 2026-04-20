@@ -326,11 +326,11 @@ cd ..
 # -----------------------------------------------------------------
 # Step 2 — Revoke filesystem write perms (belt + suspenders)
 # -----------------------------------------------------------------
-chmod -R u-w reference
+chmod -R a-w reference
 # Verify: `touch reference/test` should fail with "Permission denied"
 
 # To temporarily re-enable (for a deliberate refresh):
-#   chmod -R u+w reference && rm -rf reference && git clone ...
+#   chmod -R a+w reference && rm -rf reference && git clone ...
 
 # -----------------------------------------------------------------
 # Step 3 — Build docs-seed/ from reference/ (copies, not symlinks)
@@ -428,7 +428,7 @@ Useful lookups in the reference:
 ### 8.5 Why this doesn't hinder live production
 
 - **No network path from reference to prototype remote.** Remote was removed in Step 1.
-- **No filesystem write on reference.** `chmod -R u-w` makes it impossible.
+- **No filesystem write on reference.** `chmod -R a-w` makes it impossible for any user or process (stricter than `u-w` which only blocks the owner).
 - **No deploy pipeline in reference.** The Render deploy (live backend) is triggered by pushes to `khalidnoshtek/medrelief` on GitHub — not by anything local. Your local reference folder has no connection to that.
 - **No shared DB.** The prototype uses its own Neon project. Production will get a separate Neon project in Mumbai. Credentials don't overlap.
 - **No shared secrets.** Production uses new Anthropic / Razorpay keys.
@@ -441,14 +441,14 @@ If the prototype gets a hot-fix and you want to see it in reference:
 
 ```bash
 cd ~/code/medrelief
-chmod -R u+w reference
+chmod -R a+w reference
 rm -rf reference
 git clone https://github.com/khalidnoshtek/medrelief.git reference
 cd reference
 git remote remove origin
 git checkout --detach
 cd ..
-chmod -R u-w reference
+chmod -R a-w reference
 ```
 
 Don't `git pull` — just nuke and re-clone. Keeps the "no git ops" rule clean.
