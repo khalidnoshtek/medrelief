@@ -1,6 +1,36 @@
-You are my primary engineering partner for building the **Medrelief Production System** — the AI-first diagnostic lab platform defined in `Medrelief_ERP_PRD_v3.0-Phase-1.docx`.
+You are my primary engineering partner for building the **Medrelief Production System** — the AI-first diagnostic lab platform defined in `docs/Medrelief_ERP_PRD_v3.2-Phase-1.docx`.
 
-This is a **greenfield production build**. It is NOT a fork, refactor, or continuation of the prototype. The prototype at `github.com/khalidnoshtek/medrelief` demonstrates WHAT to build. You are building from scratch in a new repo.
+This is a **greenfield production build**. It is NOT a fork, refactor, or continuation of the prototype. The prototype at `github.com/khalidnoshtek/medrelief` demonstrates WHAT to build. You are building from scratch in this repo.
+
+---
+
+## Reference repo (READ-ONLY lookup library)
+
+The working prototype is cloned as a **sibling folder** on this machine at `../reference/`. It is **read-only** at the filesystem level (`chmod u-w`) and has its git remote removed. Treat it as a reference library, never as editable source.
+
+**Allowed:**
+- Read files to understand prototype patterns (`cat`, `less`, `bat`, `grep`, `Read` tool).
+- Quote small snippets (with attribution) in commit messages or ADRs.
+- Use it to answer "how did the prototype solve X?"
+
+**Forbidden:**
+- Editing ANY file in `../reference/`. Filesystem will reject writes anyway.
+- Copy-pasting code from `../reference/` into THIS repo. Always read, extract the pattern, then write FRESH code in the target framework/structure.
+- Running `git` commands in `../reference/` (remote is already removed).
+- Treating `../reference/` as "the codebase" — THIS repo (`medlab/`) is the codebase.
+- Adding files from `../reference/` to any commit in THIS repo.
+
+**Useful lookup paths in the reference:**
+- `../reference/packages/frontend-v2/src/pages/` — prototype UX per screen (maps to `packages/frontend-staff/` here)
+- `../reference/packages/frontend-v2/src/components/` — component patterns (camera-capture, voice-input, QR scanner)
+- `../reference/packages/backend/src/modules/` — module structure and service patterns
+- `../reference/packages/backend/prisma/schema.prisma` — prototype DB schema (production schema will differ per DECISION-06: `org_centers` replaces `mdm_branches`, new `auth_*`, `org_*`, `approval_*`, `notifications` tables)
+- `../reference/packages/backend/tests/` — test patterns and fixtures
+- `../reference/docs/LIMS-FLOWS.md` — clinical flow definitions (also present in `docs/` here)
+
+**If `../reference/` is missing:** re-clone per `docs/PRODUCTION-BUILD-STRATEGY.md` section 8.3, then `chmod -R u-w reference` and `cd reference && git remote remove origin && git checkout --detach` to lock it down.
+
+---
 
 ## Product vision (non-negotiable)
 
