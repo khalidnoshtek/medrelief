@@ -45,8 +45,36 @@ jobs:
           # SPA fallback: copy index.html to 404.html so GitHub Pages
           # serves the app for any /app/* route on refresh
           cp _site/app/index.html _site/app/404.html
+          # UI reference mockups (design-only, not functional)
+          mkdir -p _site/ui
+          cp docs/ui-reference/medrelief-prototype-2-claude.html _site/ui/claude.html
+          cp docs/ui-reference/medrelief-prototype-2-khalid.html _site/ui/khalid.html
+          cp docs/ui-reference/README.md _site/ui/README.md
+          # Simple index page for /ui/ so it's browseable
+          cat > _site/ui/index.html <<'HTML'
+          <!DOCTYPE html>
+          <html><head><meta charset="UTF-8"><title>Medrelief UI Reference</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <style>
+          body{font-family:Inter,system-ui,sans-serif;background:#FAFAF8;color:#0F172A;max-width:720px;margin:0 auto;padding:48px 24px;line-height:1.6}
+          h1{font-size:28px;letter-spacing:-0.02em;margin:0 0 8px}
+          p.sub{color:#64748B;margin:0 0 32px}
+          a.card{display:block;background:white;border:1px solid #E2E8F0;border-radius:16px;padding:20px 24px;margin-bottom:12px;text-decoration:none;color:inherit}
+          a.card:hover{border-color:#0891B2}
+          .tag{display:inline-block;background:#ECFEFF;color:#0E7490;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;margin-left:8px;text-transform:uppercase;letter-spacing:0.05em}
+          small{color:#64748B;font-size:13px}
+          </style></head><body>
+          <h1>Medrelief — UI Reference</h1>
+          <p class="sub">Design-only mockups of Prototype 2. Not functional. For reference during production build.</p>
+          <a class="card" href="khalid.html"><strong>Khalid's version</strong> <span class="tag">Preferred</span><br><small>Canonical visual direction — use as primary reference</small></a>
+          <a class="card" href="claude.html"><strong>Claude's baseline version</strong><br><small>Initial interpretation — reference for structure and patterns</small></a>
+          <a class="card" href="README.md"><strong>Design guidelines (README)</strong><br><small>Palette, typography, patterns, anti-patterns</small></a>
+          </body></html>
+          HTML
 
       - uses: actions/configure-pages@v4
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
