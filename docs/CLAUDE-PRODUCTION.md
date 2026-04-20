@@ -19,13 +19,18 @@ The prototype (v0.6.0) is the product reference. Production implements the same 
 
 ## Source of truth (in priority order)
 
-1. **`Medrelief_ERP_PRD_v3.0-Phase-1.docx`** — the PRD. Sections 1–14 (architecture, data model, workflows), 15–20 (AI-first additions), **21 (decisions log + known gaps)**.
-2. **`Medrelief-Prototype-Flow.docx`** — 16 mobile screenshots showing the target UX flow.
-3. **`PROTOTYPE-FEEDBACK-ADDITIONS.md`** — full SQL schemas, detailed auth model, open questions.
-4. **`TimeFlow-Auth-Flow.docx`** — 13 screenshots of the auth pattern to clone (flow, not UI).
-5. This file (CLAUDE.md) — how to work with me on the build.
+1. **`Medrelief_ERP_PRD_v3.2-Phase-1.docx`** — the PRD. Sections 1–14 (architecture, data model, workflows), 15–23 (AI-first additions, decisions log, Saturday + portal decisions).
+2. **`docs/PRD-SATURDAY-DECISIONS.md`** — binding Saturday review decisions (DECISION-06 through DECISION-17).
+3. **`docs/PRODUCTION-BUILD-STRATEGY.md`** — build sequencing, GitHub strategy, model routing, maker-checker workflow.
+4. **`docs/EVAL-STRATEGY.md`** — multi-Claude-model maker-checker, eval categories, templates.
+5. **`docs/prod-plan/`** — paired req+eval per feature. This is where feature work actually happens.
+6. **`docs/ui-reference/`** — design guidelines (Prototype 2 HTML mockups). Reference only — not hard specs. Prefer `medrelief-prototype-2-khalid.html` for style direction.
+7. **`Medrelief-Prototype-Flow.docx`** — 16 mobile screenshots showing the v0.6.0 prototype flow.
+8. **`PROTOTYPE-FEEDBACK-ADDITIONS.md`** — full SQL schemas, detailed auth model, open questions.
+9. **`TimeFlow-Auth-Flow.docx`** — 13 screenshots of the auth pattern to clone (flow, not UI).
+10. This file (CLAUDE.md) — how to work with me on the build.
 
-Conflicts resolve in the order above. PRD is canonical. If anything here contradicts the PRD, the PRD wins.
+Conflicts resolve in the order above. PRD is canonical. If anything here contradicts the PRD, the PRD wins. UI reference is soft — if a requirement in `prod-plan/` contradicts the reference HTML, the requirement wins.
 
 ## Locked decisions (from PRD Section 21.1)
 
